@@ -1,0 +1,123 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QRPGSRC, member CUSTCALC
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+BegClass CUSTCALC Extends(Program) Access(*Public) + 
+   Attributes(ActivationGroup("*DFTACTGRP"), + 
+             System.ComponentModel.Description("Calculate Total Sales and Returns Value")) + 
+   UsesCycle(*Yes)
+
+    //********************************************************************
+    // JB   8/30/2004   Added option to display billing info.
+
+    //********************************************************************
+    DclDiskFile CUSTOMERL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( RCUSTOMER )
+    DclDiskFile CSMASTERL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CSMASTERL1") ImpOpen(*No) RnmFmt( RCSMASTL1 )
+    //********************************************************************
+    //  ** ENTRY Parm List **
+
+    DclFld Cust#             Type( *Packed  )    Len( 9,0 )
+    DclFld Sales             Type( *Packed  )    Len( 13,2 )
+    DclFld TempAmt           Type( *Zoned   )    Len( 13,2 )
+    DclFld Returns           Type( *Packed  )    Len( 13,2 )
+    DclFld Cust#Ch           Type( *Char    )    Len( 9   )
+    DclFld SalesCh           Type( *Char    )    Len( 13  )
+    DclFld ReturnsCh         Type( *Char    )    Len( 13  )
+
+    DclFld SaleEvent         Type( *Zoned   )    Len( 1,0 )
+    DclFld ReturnEvent       Type( *Zoned   )    Len( 1,0 )
+
+    DclDs CUSTSL ExtDesc(*Yes) DbDesc(MyJob.MyDatabase) FileDesc("*LIBL/CSMASTER")
+        DclDsFld SlsArray          Type( *Packed  ) Len( 11 ,2 ) Dim( 12 ) StartAt(11)
+    
+    RnmFlds DsName( CUSTSL     )                           +
+    Flds                                            +
+    (                                              +
+    CSCUSTNO  ,  CSCUSTNO  ,  +
+    CSSALES01 ,  CSSALES01 ,  +
+    CSSALES02 ,  CSSALES02 ,  +
+    CSSALES03 ,  CSSALES03 ,  +
+    CSSALES04 ,  CSSALES04 ,  +
+    CSSALES05 ,  CSSALES05 ,  +
+    CSSALES06 ,  CSSALES06 ,  +
+    CSSALES07 ,  CSSALES07 ,  +
+    CSSALES08 ,  CSSALES08 ,  +
+    CSSALES09 ,  CSSALES09 ,  +
+    CSSALES10 ,  CSSALES10 ,  +
+    CSSALES11 ,  CSSALES11 ,  +
+    CSSALES12 ,  CSSALES12 ,  +
+    CSTYPE    ,  CSTYPE    ,  +
+    CSYEAR    ,  CSYEAR      + 
+    )
+    //********************************************************************
+/region Constructor and Dispose 
+    BegConstructor Access(*Public)
+        Open CSMASTERL1 DB(CurrentJob.Database)
+        Open CUSTOMERL1 DB(CurrentJob.Database)
+    EndConstructor
+ 
+    BegSr Dispose  Access( *Public ) Modifier(*Overrides)
+        DclSrParm disposing Type(*Boolean)
+        If( disposing )
+            Close *All
+        EndIf
+        *Base.Dispose(disposing)
+    EndSr
+ 
+ 
+/endregion
+    BegProc *Entry Access(*Public)
+        DclSrParm Cust#Ch           By(*Reference)
+        DclSrParm SalesCh           By(*Reference)
+        DclSrParm ReturnsCh         By(*Reference)
+ 
+ 
+    //*Init $$ Values
+        Sales = 0
+        Returns = 0
+
+    // Get Customer Master Record
+
+        Move Cust#Ch Cust#
+        Chain RCUSTOMER Key(Cust#) NotFnd(*IN90)
+    //* Position Sales File to Customer
+        If( *Not *IN90)
+            SetLL RCSMASTL1 Key(Cust#)
+            ReadE From(RCSMASTL1) Key(Cust#) Eof(*IN03)
+    //*Read Sales Records
+            DoWhile ( *Not *IN03)
+    //*Sales
+                XFoot Arr(SlsArray) Result(TempAmt)
+                If( CSTYPE = SaleEvent )
+                    Sales = Sales + TempAmt
+                EndIf
+    //*Returns
+                If( CSTYPE = ReturnEvent )
+                    Returns = Returns + TempAmt
+                EndIf
+    //*Read Next
+                ReadE From(RCSMASTL1) Key(Cust#) Eof(*IN03)
+            EndDo
+        EndIf
+        Move Sales SalesCh
+        Move Returns ReturnsCh
+        *INLR = *On
+    ///SPACE 3
+    // * * * * * * * * * * ** *
+    //  Initialize Event Fields
+    // * * * * * * * * * * ** *
+    EndProc
+    BegSr PROCESS_STAR_INZSR
+        SaleEvent = 1
+        ReturnEvent = 2
+        *IN03 = *Off
+        Sales = 0
+        Returns = 0
+    EndSr
+ 
+EndClass

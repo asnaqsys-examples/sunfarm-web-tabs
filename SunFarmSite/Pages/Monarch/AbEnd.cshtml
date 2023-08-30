@@ -1,0 +1,15 @@
+﻿@model ASNA.QSys.Expo.Model.YellowPageModel
+@{
+}
+
+<div style="padding:1em">
+    <h1>Abnormal Termination</h1>
+    <br />
+    <em>There has been an abnormal termination of the program.</em>
+
+    <p><strong>Exception</strong></p>
+    <pre style="background-color:yellow;">@ViewData["ASNA_AbEndMessage"]</pre>
+
+    <p><strong>StackTrace</strong></p>
+    <pre style="font-size: smaller">@ViewData["ASNA_AbEndStack"]</pre>
+</div>

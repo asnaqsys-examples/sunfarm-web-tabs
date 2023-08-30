@@ -1,0 +1,702 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QRPGSRC, member CUSTINQ
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+BegClass CUSTINQ Extends(Program) Access(*Public) + 
+   Attributes(CallerActivationGroup(), + 
+             System.ComponentModel.Description("Customer Inquiry and Maintenance")) + 
+   UsesCycle(*Yes)
+
+    //      ********************************************************************
+    //       JB   8/27/2004   Added F4 (Prompt) options.
+    //       JB   8/30/2004   Added 'submit job' option.
+    //       JB   9/01/2004   Fixed record locking problem.
+    //       JB   5/19/2005   Added colouring to the name/addr subfile.
+    //                        Added cursor postioning to the detail format.
+    //                        Added option to print sales online or in batch.
+    //                        Changed the prompt display to a window.
+    //       JB   5/23/2005   Added /COPY for reading CUSTOMERL1.
+    //                        Added customer name to the sales summary format.
+    //                        Added renaming of CUSTOMERL1 record format.
+    //       JB   5/24/2005   Simplified the LoadSfl subroutine.
+    //       JB   5/31/2005   Added PageDown/RollUp processing.
+    //       JB   6/01/2005   Renamed CMMASTER* files to CUSTOMER*.
+    //       JB  14/02/2006   Fixed bug in page up on the customer subfile -
+    //                        a customer record was skipped every time.
+    //      ********************************************************************
+    //       INDICATORS:
+    //         03     F3 pressed
+    //         09     F9 pressed
+    //         40-44  Cursor positioning
+    //         50     PageUp pressed
+    //         51     PageDown pressed
+    //         66     EOF reading on the subfile
+    //         76     BOF reading CUSTOMERL2
+    //         77     EOF reading CUSTMOMER2
+    //         88     LR seton in a called program
+    //         99     General error indicator
+    //      ********************************************************************
+    DclWorkStnFile CUSTDSPF DspFile("~\Areas\SunFarmViews\Pages\CUSTDSPF") Subfile( SFL1,sflrrn )
+    //                                    HANDLER('ASNAWINGS')
+    DclDiskFile CUSTOMERL2  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL2") ImpOpen(*No) RnmFmt( L2RECFMT )
+    DclDiskFile CUSTOMERL1  Type(*Update) AddRec(*Yes) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( L1RECFMT )
+    DclDiskFile CUSTOMERL1_ReadOnly  Type(*Input) AddRec(*Yes) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( L1RECFMT_ReadOnly )
+    //********************************************************************
+    DclDs 
+        DclDsFld #pNbrs            Type( *Zoned   )    Len( 3,0 )
+        DclDsFld #pNbrsAlf         Type( *Char    )    Len( 3   ) StartAt(1)
+    
+    DclArray pNumbers          Type( *Zoned   ) Len( 9  ,0 ) Dim( 20 )
+    DclArray pTypes            Type( *Char    ) Len( 1   ) Dim( 20 )
+    DclFld MID               Type( *Char    )    Len( 7   )
+    DclFld MTX               Type( *Char    )    Len( 30  )
+    DclFld Sales             Type( *Packed  )    Len( 13,2 )
+    DclFld Returns           Type( *Packed  )    Len( 13,2 )
+    DclFld LockRec           Type( *Char    )    Len( 1   )
+    DclFld CmCust#           Type( *Packed  )    Len( 9,0 )
+    DclFld SalesCh           Type( *Char    )    Len( 13  )
+    DclFld ReturnsCh         Type( *Char    )    Len( 13  )
+    DclFld CmCust#CH         Type( *Char    )    Len( 9   )
+    DclFld X                 Type( *Packed  )    Len( 5,0 ) Inz( 0 )
+    DclDs 
+        DclDsFld SVCUSTNO          Type( *Zoned   )    Len( 9,0 )
+        DclDsFld SVCUSTNOa         Type( *Char    )    Len( 9   ) Overlay(SVCUSTNO)
+    
+    // Customer DS
+    DclDs CUSTDS ExtDesc(*Yes) DbDesc(MyJob.MyDatabase) FileDesc("*LIBL/CUSTOMER")
+    RnmFlds DsName( CUSTDS     )                           +
+    Flds                                            +
+    (                                              +
+    CMACTIVE  ,  CMACTIVE  ,  +
+    CMADDR1   ,  CMADDR1   ,  +
+    CMADDR2   ,  CMADDR2   ,  +
+    CMCITY    ,  CMCITY    ,  +
+    CMCONEMAL ,  CMCONEMAL ,  +
+    CMCONTACT ,  CMCONTACT ,  +
+    CMCUSTNO  ,  CMCUSTNO  ,  +
+    CMFAX     ,  CMFAX     ,  +
+    CMNAME    ,  CMNAME    ,  +
+    CMPHONE   ,  CMPHONE   ,  +
+    CMPOSTCODE                    ,  CMPOSTCODE                    ,  +
+    CMSTATE   ,  CMSTATE   ,  +
+    CMUSRFLGS ,  CMUSRFLGS ,  +
+    CMYN01    ,  CMYN01    ,  +
+    CMYN02    ,  CMYN02    ,  +
+    CMYN03    ,  CMYN03      + 
+    )
+    //       Open Feedback Area
+    //       Input/Output Feedback Information
+    //                                                                         * 241-242 not used
+    //       Display Specific Feedback Information
+    //                                                                         *  cursor location
+    DclFld HRC01            Like( REC01     )
+    DclFld SVS01             Type( *Packed  )    Len( 5,0 )
+    DclFld HRC02            Like( REC02     )
+    DclFld SVS02             Type( *Packed  )    Len( 5,0 )
+    //********************************************************************
+ 
+// Fields defined in main C-Specs declared now as Global fields (Monarch generated)
+    DclFld AddUpd            Type( *Char    )    Len( 1   )
+    DclFld Name40            Type( *Char    )    Len( 40  )
+    DclFld ORDCUST           Type( *Packed  )    Len( 9,0 )
+    DclFld pNumber           Type( *Packed  )    Len( 9,0 )
+    DclFld pResult           Type( *Char    )    Len( 10  )
+    DclFld savrrn            Type( *Packed  )    Len( 4,0 )
+    DclFld sflrrn            Type( *Packed  )    Len( 4,0 )
+    DclFld TEMPNO            Type( *Packed  )    Len( 9,0 )
+ 
+    // PLIST(s) relocated by Monarch
+    DclPList #PLMSG
+        DclParm MID
+        DclParm MTX
+    
+ 
+    // KLIST(s) relocated by Monarch
+    DclKList KeyMastL2
+        DclKFld CMNAME 
+        DclKFld CMCUSTNO 
+    
+ 
+/region Constructor and Dispose 
+    BegConstructor Access(*Public)
+ 
+        // Initialization of Data Structure fields (Monarch generated)
+        Reset_#pNbrs()
+ 
+        Open CUSTOMERL1 DB(CurrentJob.Database)
+        Open CUSTOMERL1_ReadOnly DB(CurrentJob.Database)
+        Open CUSTOMERL2 DB(CurrentJob.Database)
+    EndConstructor
+ 
+    BegSr Dispose  Access( *Public ) Modifier(*Overrides)
+        DclSrParm disposing Type(*Boolean)
+        If( disposing )
+            Close *All
+        EndIf
+        *Base.Dispose(disposing)
+    EndSr
+ 
+ 
+/endregion
+    BegProc *Entry Access(*Public)
+ 
+ 
+        // KLIST "KeyMastL2" moved by Monarch to global scope.
+    //********************************************************************
+        DoUntil ( *IN03)
+            *IN90 = "0"
+            Write MSGSFC
+            Write KEYS
+            ExFmt SFLC 
+            ClearMsgs()
+    //--------------------------------------------------------------------
+            Select
+    // Exit
+                When( *IN03)
+                    *INLR = "1"
+                    Leave
+    // PageUp-RollDown
+                When( *IN50)
+                    SetLL L2RECFMT Key(CMNAME)
+                    LoadSfl()
+    // Work with spooled files
+                When( *IN09)
+                    CallD Pgm( "ACME.SunFarm.WWSPLF"  )
+                When( SETNAME <> *Blanks )
+                    MoveL SETNAME Name40 Fill(*Pad)
+                    SetLL L2RECFMT Key(Name40)
+                    LoadSfl()
+    // PageDown-RollUp
+                When( *IN51)
+                    ReadBack()
+                    LoadSfl()
+                When( SETNAME <> *Blanks )
+                    MoveL SETNAME Name40 Fill(*Pad)
+                    SetLL L2RECFMT Key(Name40)
+                    LoadSfl()
+                Other
+
+    // Process any individual Subfile record Option Selections
+
+                    SetOff IndList( *IN30, *IN66 )
+                    savrrn = sflrrn
+                    pNumbers = 0
+                    #pNbrs = 0
+                    DoUntil ( *IN66)
+                        ReadC SFL1 Eof(*IN66)
+                        If( *Not *IN66)
+                            Select
+                                When( SFSEL = 10 ) // Print in batch.
+                                    Chain SFL1 Key(sflrrn)
+                                    #pNbrs = #pNbrs + 1
+                                    pNumbers[ (#pNbrs) - 1 ] = SFCUSTNO
+                                    MoveL "P" pTypes[#pNbrs-1]
+                                    ClearSel()
+                                When( SFSEL = 9 ) // Print online.
+                                    SVCUSTNO = SFCUSTNO
+                                    CallD Pgm( "ACME.SunFarm.CUSTPRTS"  )  LR(*IN88)
+                                        DclParm SVCUSTNOa
+                                    MID = "CST0006"
+                                    MTX = " "
+                                    CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                                    ClearSel()
+                                When( SFSEL = 7 ) // Create sales rec.
+                                    Chain SFL1 Key(sflrrn)
+                                    #pNbrs = #pNbrs + 1
+                                    pNumbers[ (#pNbrs) - 1 ] = SFCUSTNO
+                                    MoveL "C" pTypes[#pNbrs-1]
+                                    ClearSel()
+                                When( SFSEL = 5 ) // Display delivery
+                                    Chain SFL1 Key(sflrrn) //  addresses.
+                                    CallD Pgm( "ACME.SunFarm.CUSTDELIV"  )  LR(*IN88)
+                                        DclParm CpyFrom(SFCUSTNO) Name(pNumber)
+                                    ClearSel()
+
+                                When( SFSEL = 3 ) // Display sales and
+                                    Chain SFL1 Key(sflrrn) //  returns totals.
+                                    SalesInfo()
+
+                                When( SFSEL = 11 ) // Maintainance.
+                                    Chain SFL1 Key(sflrrn)
+                                    ORDCUST = SFCUSTNO
+                                    CallD Pgm( "ACME.SunFarm.ORDHINQ"  )
+                                        DclParm ORDCUST
+                                    ClearSel()
+
+                                When( SFSEL = 2 ) // Maintainance.
+                                    Chain SFL1 Key(sflrrn)
+                                    RcdUpdate()
+                            EndSl
+                        EndIf
+                    EndDo
+
+                    If( #pNbrs > 0 ) //Are there any jobs
+                        CallD Pgm( "ACME.SunFarm.CUSTSBMJOB"  )  LR(*IN88) // to submit to batch?
+                            DclParm pNumbers
+                            DclParm pTypes
+                        MID = "CST0005"
+                        MTX = #pNbrsAlf
+                        CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                    EndIf
+
+                    sflrrn = savrrn
+            EndSl
+
+        EndDo
+
+
+    //*********************************************************************
+    // UPDATE THE CUSTOMER RECORD
+    //*********************************************************************
+
+    EndProc
+    BegSr RcdUpdate
+        ClearSel()
+        Move "U" AddUpd
+
+        CMCUSTNO = SFCUSTNO
+        LockRec = "N"
+        CustChk()
+
+        SFOLDNAME = CMNAME
+        #SFNAME = CMNAME
+        SFADDR1 = CMADDR1
+        SFADDR2 = CMADDR2
+        SFCITY = CMCITY
+        SFSTATE = CMSTATE
+        SFPOSTCODE = CMPOSTCODE
+        MoveL CMFAX SFFAX
+        SFPHONE = CMPHONE
+        #$STATUS = CMACTIVE
+        SFCONTACT = CMCONTACT
+        SFCONEMAL = CMCONEMAL
+        SFYN01 = CMYN01
+
+        SetOn *IN40 // Place the cursor on
+        SetOff IndList( *IN41, *IN42, *IN43 ) //  the name field.
+        SetOff IndList( *IN44, *IN99 )
+
+    //-------------------------------------------------------
+
+        DoUntil ( *IN12)
+            Write MSGSFC
+            ExFmt CUSTREC 
+
+            SetOff IndList( *IN40, *IN41, *IN42 )
+            SetOff IndList( *IN43, *IN44 )
+
+            ClearMsgs()
+            *IN30 = "0"
+
+            Select
+                When( *IN03)
+                    Leave
+
+                When( *IN12)
+                    Leave
+
+    // Prompt
+                When( *IN04)
+
+                    If( CSRFLD = "#$STATUS" )
+                        MoveL "SF" CSRFLD
+                    EndIf
+                    If( CSRFLD = "SFSTATE"  +
+                        *Or ( CSRFLD = "SFSTATUS" ) )
+                        CallD Pgm( "ACME.SunFarm.CUSTPRMPT"  )  LR(*IN88)
+                            DclParm CSRFLD
+                            DclParm pResult
+
+                        If( pResult <> *Blanks )
+
+                            If( CSRFLD = "SFSTATE" )
+                                MoveL pResult SFSTATE
+                            Else
+                                MoveL pResult #$STATUS
+                            EndIf
+                        EndIf
+                    Else
+                        MID = "CST0004"
+                        MTX = " "
+                        CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                        SetOff *IN04
+                    EndIf
+
+                When( *IN06)
+                    SVCUSTNO = CMCUSTNO
+                    SetGT L1RECFMT_ReadOnly Key(*Hival)
+                    ReadP L1RECFMT_ReadOnly // Removed Access(*NoLock)
+                    CUSTOMERL1.StatusCode = CUSTOMERL1_ReadOnly.StatusCode
+                    TEMPNO = CMCUSTNO + 100
+                    Clear CUSTDS
+                    CMCUSTNO = TEMPNO
+                    Move "A" AddUpd
+                    SFCUSTNO = TEMPNO
+                    MoveL *Blanks #SFNAME
+                    MoveL *Blanks SFADDR1
+                    MoveL *Blanks SFADDR2
+                    MoveL *Blanks SFCITY
+                    MoveL *Blanks SFSTATE
+                    MoveL *Blanks SFPOSTCODE
+                    MoveL *Blanks SFFAX
+                    MoveL *Blanks SFPHONE
+                    MoveL *Blanks #$STATUS
+                    MoveL *Blanks SFCONTACT
+                    MoveL *Blanks SFCONEMAL
+                    MoveL *Blanks SFYN01
+                    *IN30 = "1"
+
+    // Delete - leave sales hanging?
+
+                When( *IN11)
+                    LockRec = "Y"
+                    CustChk()
+                    If( *Not(*IN80) )
+                        Delete From(L1RECFMT)
+                    EndIf
+
+                    Chain SFL1 Key(sflrrn)
+                    Move *Blanks SFCSZ
+                    SFNAME1 = "*** DELETED ***"
+    // Set the color
+                    *IN60 = "1"
+                    Update SFL1
+                    *IN60 = "0"
+    // Delete msg
+                    MID = "CST0003"
+                    Move CMCUSTNO MTX
+                    CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                    Leave
+
+    // Add/update on the Enter key
+                Other
+
+                    If( AddUpd = "A" )
+                        EditFlds()
+                        If( *IN99) // Any errors?
+                            Iterate
+                        EndIf
+                        UpdDbFlds()
+                        Write L1RECFMT
+
+    // Added message
+                        MID = "CST0001"
+                        Move CMCUSTNO MTX
+                        CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                        Leave
+
+    // Update the database
+                    Else
+                        EditFlds()
+                        If( *IN99) // Any errors?
+                            Iterate
+                        EndIf
+                        LockRec = "Y"
+                        CustChk() //Reread the record.
+                        UpdDbFlds()
+                        Update L1RECFMT
+                        Chain SFL1 Key(sflrrn)
+                        SFNAME1 = CMNAME
+                        Fix_CSZ()
+                        Update SFL1
+
+    // Updated message
+                        MID = "CST0002"
+                        MoveL CMCUSTNO MTX
+                        CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                    EndIf
+
+    // Re-open for the next update
+                    LockRec = "N"
+                    CustChk()
+            EndSl
+
+        EndDo
+
+    EndSr
+
+    //*********************************************************************
+    //  EDIT THE SCREEN FIELDS
+    //*********************************************************************
+
+    BegSr EditFlds
+        SetOff IndList( *IN40, *IN41, *IN42 ) //Clear all error inds
+        SetOff IndList( *IN43, *IN44, *IN99 )
+
+        Select
+            When ( #SFNAME = *Blanks )
+                SetOn IndList( *IN40, *IN99 )
+                MID = "CST1001" // Blank field.
+                MTX = "customer name"
+
+            When ( SFADDR1 = *Blanks )
+                SetOn IndList( *IN41, *IN99 )
+                MID = "CST1001" // Blank field.
+                MTX = "first address line"
+
+            When ( SFCITY = *Blanks )
+                SetOn IndList( *IN42, *IN99 )
+                MID = "CST1001" // Blank field.
+                MTX = "city"
+
+            When ( SFSTATE = *Blanks )
+                SetOn IndList( *IN43, *IN99 )
+                MID = "CST1002" // Blank field.
+                MTX = "state"
+
+            When ( #$STATUS = *Blanks )
+                SetOn IndList( *IN44, *IN99 )
+                MID = "CST1002" //Blank field.
+                MTX = "status"
+        EndSl
+
+        If( *IN99)
+            CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+        EndIf
+
+    EndSr
+
+    //*********************************************************************
+    //  UPDATE THE DATABASE FIELDS
+    //*********************************************************************
+
+    BegSr UpdDbFlds
+        CMCUSTNO = SFCUSTNO
+        CMNAME = %Trim(#SFNAME)
+        CMADDR1 = %Trim(SFADDR1)
+        CMADDR2 = %Trim(SFADDR2)
+        CMCITY = %Trim(SFCITY)
+        CMSTATE = SFSTATE
+        CMPOSTCODE = SFPOSTCODE
+        MoveL SFFAX CMFAX
+        CMPHONE = SFPHONE
+        CMACTIVE = #$STATUS
+        CMCONTACT = %Trim(SFCONTACT)
+        CMCONEMAL = %Trim(SFCONEMAL)
+        CMYN01 = %Trim(SFYN01)
+    EndSr
+
+
+    //*********************************************************************
+    // Retrieve Calculated Sales Info
+    //*********************************************************************
+
+    BegSr SalesInfo
+        ClearSel()
+
+        CMCUSTNO = SFCUSTNO
+        LockRec = "N"
+        CustChk()
+
+        CmCust# = CMCUSTNO
+        Sales = 0
+        Returns = 0
+        Move CMCUSTNO CmCust#CH
+        Move *Zeros SalesCh
+        Move *Zeros ReturnsCh
+        CallD Pgm( "ACME.SunFarm.CUSTCALC"  )  LR(*IN88)
+            DclParm CmCust#CH
+            DclParm SalesCh
+            DclParm ReturnsCh
+
+        SFNAME = CMNAME
+        Move SalesCh SFSALES
+        Move ReturnsCh SFRETURNS
+
+        DoUntil ( *IN03 +
+            *Or ( *IN12) )
+            ExFmt SALESREC 
+        EndDo
+
+        SetOff *IN03 // Reset the exit ind.
+
+    EndSr
+
+
+    //*********************************************************************
+    //  Load Sfl Subroutine
+    //*********************************************************************
+
+    BegSr LoadSfl
+        SetOff *IN61 //Start with green.
+        *IN90 = "1" //Clear the subfile.
+        Write SFLC
+
+        SetOff IndList( *IN76, *IN90 ) //Display records.
+        sflrrn = 0
+        Read L2RECFMT Eof(*IN77)
+        If STS02 <> *Zero
+            SVS02 = STS02
+        Else
+            HRC02 = REC02
+        EndIf
+
+    //----------------------------------------------------------
+
+        DoWhile ( *Not *IN77  /* EOF or full s/f. */ +
+            *And ( sflrrn < 14 ) )
+
+            SFCUSTNO = CMCUSTNO
+            SFNAME1 = CMNAME
+            Fix_CSZ()
+            If( *IN61) //Save the color of
+                SFCOLOR = "W"
+            Else
+                SFCOLOR = "G"
+            EndIf
+
+            sflrrn = sflrrn + 1
+            Write SFL1
+            *IN61 = (*Not *IN61) //Reverse the colour.
+
+            Read L2RECFMT Eof(*IN77)
+        EndDo
+
+    // Any records found?
+
+        If( sflrrn = 0 )
+            sflrrn = 1
+            Move *Blanks SFCUSTNO
+            CMCUSTNO = 0
+            MoveL "END OF FILE" SFNAME1
+            Move *Blanks SFCSZ
+            Write SFL1
+        EndIf
+
+    EndSr
+
+
+    //*********************************************************************
+    //  Read Backwards for a PageDown
+    //*********************************************************************
+
+    BegSr ReadBack
+
+        SetOff IndList( *IN76, *IN77 )
+        X = 0
+        Chain SFL1 Key(1) //Get the top name and
+        CMNAME = SFNAME1
+        CMCUSTNO = SFCUSTNO
+        Chain L2RECFMT Key(KeyMastL2)
+        ReadP L2RECFMT Bof(*IN76)
+
+        DoWhile ( *Not *IN76  /* EOF or full s/f. */ +
+            *And ( X < 14 ) )
+            X = X + 1
+            ReadP L2RECFMT Bof(*IN76)
+        EndDo
+
+        If( *IN76) //Any records found?
+            SetLL L2RECFMT Key(*LoVal)
+        EndIf
+
+    EndSr
+
+
+    //*********************************************************************
+    // Fix CSZ Subroutine
+    //*********************************************************************
+
+    BegSr Fix_CSZ
+        SFCSZ = %TrimR(CMCITY) + ", " + CMSTATE +" " + CMPOSTCODE
+    EndSr
+
+
+    //*********************************************************************
+    // CLEAR THE SELECTION NUMBER
+    //*********************************************************************
+
+    BegSr ClearSel
+        SFSEL = 0
+        *IN61 = (SFCOLOR = "W")
+        Update SFL1
+    EndSr
+
+
+    //*********************************************************************
+    // CLEAR THE MESSAGE QUEUE
+    //*********************************************************************
+
+    BegSr ClearMsgs
+        CallD Pgm( "ACME.SunFarm.MSGCLR"  )
+        MID = *Blank
+    EndSr
+
+
+
+    //*********************************************************************
+    //     * Init Subroutine
+    //*********************************************************************
+    BegSr PROCESS_STAR_INZSR
+        SetLL L2RECFMT Key(*Loval)
+        LoadSfl()
+
+        *IN75 = *On
+        MID = *Blank
+        @PGMQ = "*"
+        CallD Pgm( "ACME.SunFarm.MSGCLR"  )
+
+    // Message handling parm list
+        // PLIST "#PLMSG" moved by Monarch to global scope.
+    EndSr
+
+    //********************************************************************
+    //   CHECK THE CUSTOMER NUMBER
+    //********************************************************************
+    BegSr CustChk
+        If( LockRec = "N" )
+            Chain L1RECFMT_ReadOnly Key(CMCUSTNO) NotFnd(*IN80) // Removed Access(*NoLock)
+            CUSTOMERL1.StatusCode = CUSTOMERL1_ReadOnly.StatusCode
+        Else
+            Chain L1RECFMT Key(CMCUSTNO) NotFnd(*IN80)
+        EndIf
+    EndSr
+
+/region File Information Data Structures
+    
+    BegProp STATUS Type(*Integer) Len(4)
+        BegGet
+            LeaveSr CUSTDSPF.StatusCode 
+        EndGet
+        BegSet
+            CUSTDSPF.StatusCode = *PropVal
+        EndSet
+    EndProp
+    
+    BegProp STS02 Type(*Integer) Len(4)
+        BegGet
+            LeaveSr CUSTOMERL2.StatusCode 
+        EndGet
+        BegSet
+            CUSTOMERL2.StatusCode = *PropVal
+        EndSet
+    EndProp
+    
+    BegProp REC02 Type(*Integer) Len(4)
+        BegGet
+            LeaveSr CUSTOMERL2.RecNum 
+        EndGet
+    EndProp
+    
+    BegProp REC01 Type(*Integer) Len(4)
+        BegGet
+            LeaveSr CUSTOMERL1.RecNum 
+        EndGet
+    EndProp
+    
+    
+/endregion
+
+    
+    BegSr Reset_#pNbrs
+        #pNbrs = *Zeros
+    EndSr
+ 
+EndClass
+// /Error There are 1 NoLock Sequential Read operations. Using *NoLock on a file opened for *Update is not supported with DSS .NET
+// /Error There are 1 NoLock CHAIN operations. Using *NoLock on a file opened for *Update is not supported with DSS .NET

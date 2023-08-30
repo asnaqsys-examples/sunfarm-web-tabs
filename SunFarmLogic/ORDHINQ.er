@@ -1,0 +1,449 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QRPGSRC, member ORDHINQ
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+BegClass ORDHINQ Extends(Program) Access(*Public) + 
+   Attributes(ActivationGroup("*DFTACTGRP"), + 
+             System.ComponentModel.Description("Order Header Inquiry and Maintenance")) + 
+   UsesCycle(*Yes)
+
+    DclWorkStnFile ORDHDSPF DspFile("~\Areas\SunFarmViews\Pages\ORDHDSPF") Subfile( SFL1,sflrrn )
+    DclDiskFile OrderHdrL2  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/OrderHdrL2") ImpOpen(*No) RnmFmt( L2ORDREC )
+    DclDiskFile OrderHdrL1  Type(*Update) AddRec(*Yes) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/OrderHdrL1") ImpOpen(*No) RnmFmt( L1ORDREC )
+    DclDiskFile OrderHdrL1_ReadOnly  Type(*Input) AddRec(*Yes) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/OrderHdrL1") ImpOpen(*No) RnmFmt( L1ORDREC_ReadOnly )
+    DclDiskFile CustomerL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CustomerL1") ImpOpen(*No) RnmFmt( L1CUSTREC )
+    //********************************************************************
+    DclDs 
+        DclDsFld #pNbrs            Type( *Zoned   )    Len( 3,0 )
+    
+    DclArray pNumbers          Type( *Zoned   ) Len( 9  ,0 ) Dim( 20 )
+    DclFld MID               Type( *Char    )    Len( 7   )
+    DclFld MTX               Type( *Char    )    Len( 30  )
+    DclFld LockRec           Type( *Char    )    Len( 1   )
+    DclFld X                 Type( *Packed  )    Len( 5,0 ) Inz( 0 )
+    DclFld SVOrdnum          Type( *Packed  )    Len( 9,0 )
+    DclFld TempWgt           Type( *Packed  )    Len( 13,2 )
+    // Order      DS
+    DclDs OrdhDS ExtDesc(*Yes) DbDesc(MyJob.MyDatabase) FileDesc("*LIBL/ORDERHEADR")
+    RnmFlds DsName( OrdhDS     )                           +
+    Flds                                            +
+    (                                              +
+    ORDAMOUNT ,  ORDAMOUNT ,  +
+    ORDCUST   ,  ORDCUST   ,  +
+    ORDDATE   ,  ORDDATE   ,  +
+    ORDDELDATE                    ,  ORDDELDATE                    ,  +
+    ORDNUM    ,  ORDNUM    ,  +
+    ORDSHPCHG ,  ORDSHPCHG ,  +
+    ORDSHPDATE                    ,  ORDSHPDATE                    ,  +
+    ORDSHPVIA ,  ORDSHPVIA ,  +
+    ORDWEIGHT ,  ORDWEIGHT   + 
+    )
+    //********************************************************************
+ 
+// Fields defined in main C-Specs declared now as Global fields (Monarch generated)
+    DclFld AddUpd            Type( *Char    )    Len( 1   )
+    DclFld CKorddate         Type( *Packed  )    Len( 8,0 )
+    DclFld CustNo            Type( *Packed  )    Len( 9,0 )
+    DclFld Delall            Type( *Char    )    Len( 1   )
+    DclFld pCsrFld           Type( *Char    )    Len( 10  )
+    DclFld pResult           Type( *Char    )    Len( 10  )
+    DclFld savrrn            Type( *Packed  )    Len( 4,0 )
+    DclFld sflrrn            Type( *Packed  )    Len( 4,0 )
+    DclFld TEMPNO            Type( *Packed  )    Len( 9,0 )
+    DclFld WorkTemp1         Type( *Char    )    Len( 1   )
+ 
+    // PLIST(s) relocated by Monarch
+    DclPList #PLMSG
+        DclParm MID
+        DclParm MTX
+    
+ 
+    // KLIST(s) relocated by Monarch
+    DclKList KeyMastL2
+        DclKFld CustNo 
+        DclKFld ORDNUM 
+    
+ 
+/region Constructor and Dispose 
+    BegConstructor Access(*Public)
+ 
+        // Initialization of Data Structure fields (Monarch generated)
+        Reset_#pNbrs()
+ 
+        Open CustomerL1 DB(CurrentJob.Database)
+        Open OrderHdrL1 DB(CurrentJob.Database)
+        Open OrderHdrL1_ReadOnly DB(CurrentJob.Database)
+        Open OrderHdrL2 DB(CurrentJob.Database)
+    EndConstructor
+ 
+    BegSr Dispose  Access( *Public ) Modifier(*Overrides)
+        DclSrParm disposing Type(*Boolean)
+        If( disposing )
+            Close *All
+        EndIf
+        *Base.Dispose(disposing)
+    EndSr
+ 
+ 
+/endregion
+    BegProc *Entry Access(*Public)
+        DclSrParm CustNo            By(*Reference)
+ 
+ 
+        // KLIST "KeyMastL2" moved by Monarch to global scope.
+    //********************************************************************
+        Chain L1CUSTREC Key(CustNo)
+        SCRCUST = %Trim(%EditC(CMCUSTNO:"Z")) +" " + CMNAME
+        SCRPHONE = %Trim(CMPHONE)
+        If( CMFAX <> 0 )
+            MoveL CMFAX SCRFAX
+            SCRFAX = "(" + %Subst(SCRFAX:1:3) +") " + %Subst(SCRFAX:4:3) +"-" + %Subst(SCRFAX:7:4) 
+        EndIf
+    //--------------------------------------------------------------------
+        DoUntil ( *IN12)
+            *IN90 = "0"
+            *IN77 = "0"
+            Write MSGSFC
+            Write KEYS
+            ExFmt SFLC 
+            Clear SFFILESTAT
+    //--------------------------------------------------------------------
+            Select
+    // Exit
+                When( *IN12)
+                    *INLR = "1"
+                    Leave
+    // PageUp-RollDown
+                When( *IN50)
+                    SetLL L2ORDREC Key(KeyMastL2)
+                    LoadSfl()
+    // PageDown-RollUp
+                When( *IN51)
+                    ReadBack()
+                    LoadSfl()
+                When( SETORDNUM <> *Zero )
+                    ORDNUM = SETORDNUM
+                    SetLL L2ORDREC Key(KeyMastL2)
+                    LoadSfl()
+                When( *IN06)
+                    SVOrdnum = ORDNUM
+                    SetGT L1ORDREC_ReadOnly Key(*HiVal)
+                    ReadP L1ORDREC_ReadOnly // Removed Access(*NoLock)
+                    OrderHdrL1.StatusCode = OrderHdrL1_ReadOnly.StatusCode
+                    TEMPNO = ORDNUM + 10
+                    ORDNUM = TEMPNO
+                    ORDCUST = CustNo
+                    ORDDATE = %Date()
+                    ORDSHPDATE = %Date()
+                    ORDDELDATE = *Zero
+                    ORDSHPVIA = *Zero
+                    ORDAMOUNT = *Zero
+                    Write L1ORDREC
+                    Move "A" AddUpd
+                    DTORDNUM = TEMPNO
+                    SFORDNUM = TEMPNO
+                    DTORDDATE = ORDDATE
+                    DTSHPDATE = ORDSHPDATE
+                    DTDELDATE = ORDDELDATE
+                    DTSHPVIA = ORDSHPVIA
+                    *IN30 = "1"
+                    RcdUpdate()
+                Other
+                    SetOff IndList( *IN30, *IN66 )
+                    savrrn = sflrrn
+                    pNumbers = 0
+                    #pNbrs = 0
+                    DoUntil ( *IN66)
+                        ReadC SFL1 Eof(*IN66)
+                        If( *Not *IN66)
+                            Select
+                                When( SFSEL = 6 ) // Print the order.
+                                    CallD Pgm( "ACME.SunFarm.ORDPRINT"  )
+                                        DclParm CustNo
+                                        DclParm CpyFrom(SFORDNUM) Name(ORDNUM)
+                                    Move "N" LockRec
+                                    OrdChk()
+                                    ClearSel()
+                                When( SFSEL = 3 ) // Maintainance.
+                                    CallD Pgm( "ACME.SunFarm.ORDDTLINQ"  )
+                                        DclParm CustNo
+                                        DclParm CpyFrom(SFORDNUM) Name(ORDNUM)
+                                        DclParm CpyFrom(" ") Name(Delall)
+                                    Move "N" LockRec
+                                    OrdChk()
+                                    SFORDAMT = ORDAMOUNT
+                                    ClearSel()
+                                When( SFSEL = 2 ) // Maintainance.
+                                    Chain SFL1 Key(sflrrn)
+                                    Move "U" AddUpd
+                                    RcdUpdate()
+                            EndSl
+                        EndIf
+                    EndDo
+                    sflrrn = savrrn
+            EndSl
+        EndDo
+    ///SPACE 3
+    //*********************************************************************
+    // UPDATE THE ORDER RECORD
+    //*********************************************************************
+    EndProc
+    BegSr RcdUpdate
+        If( *Not *IN06) // If not a new order.
+            ClearSel()
+        EndIf
+        ORDNUM = SFORDNUM
+        LockRec = "N"
+        OrdChk()
+        DTORDNUM = ORDNUM
+        Move ORDDATE DTORDDATE
+        Move ORDSHPDATE DTSHPDATE
+        DTDELDATE = ORDDELDATE
+        DTSHPVIA = ORDSHPVIA
+        TempWgt = ORDWEIGHT / 16 // Convert to pounds.
+        DTWEIGHT = %Trim(%EditC(TempWgt:"1")) +" Lbs"
+        SetOn *IN40 // Place the cursor on
+        SetOff IndList( *IN41, *IN42, *IN43 ) //  the name field.
+        SetOff IndList( *IN44, *IN99 )
+    //-------------------------------------------------------
+        DoUntil ( *IN12)
+            Write MSGSFC
+            Write MYWINDOW
+            ExFmt ORDHREC 
+            SetOff IndList( *IN40, *IN41, *IN42 )
+            SetOff IndList( *IN43, *IN44 )
+            ClearMsgs()
+            *IN30 = "0"
+            Select
+                When( *IN12)
+                    Leave
+                When( *IN04)
+                    CallD Pgm( "ACME.SunFarm.CUSTPRMPT"  )
+                        DclParm CpyFrom("SHIPVIA") Name(pCsrFld)
+                        DclParm pResult
+                    MoveL pResult WorkTemp1
+                    Move WorkTemp1 DTSHPVIA
+    // Delete  Order
+    // Delete  The order line items first
+                When( *IN11)
+                    CallD Pgm( "ACME.SunFarm.ORDDTLINQ"  )
+                        DclParm CustNo
+                        DclParm CpyFrom(SFORDNUM) Name(ORDNUM)
+                        DclParm CpyFrom("Y") Name(Delall)
+                    LockRec = "Y"
+                    OrdChk()
+                    If( *Not(*IN80) )
+                        Delete From(L1ORDREC)
+                    EndIf
+                    Chain SFL1 Key(sflrrn)
+                    Clear SFORDDATE
+                    Clear SFSHPDATE
+                    Move *Zeros SFDELDATE
+                    Move *Zeros SFORDAMT
+                    SFSHPVIA = 000
+                    SFFILESTAT = "*Del"
+    // Set the color
+                    *IN60 = "1"
+                    Update SFL1
+                    *IN60 = "0"
+    // Delete msg
+                    MID = "ORD0003"
+                    Move ORDNUM MTX
+                    CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                    Leave
+    // Add/update on the Enter key
+                Other
+                    If( AddUpd = "A" )
+                        EditFlds()
+                        If( *IN99) // Any errors?
+                            Iterate
+                        EndIf
+                        Chain OrderHdrL1 Key(TEMPNO)
+                        UpdDbFlds()
+                        Update L1ORDREC
+                        SetLL L2ORDREC Key(CustNo)
+                        LoadSfl()
+    // Added message
+                        MID = "ORD0001"
+                        MoveL ORDNUM MTX
+                        CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                        Leave
+    // Update the database
+                    Else
+                        EditFlds()
+                        If( *IN99) // Any errors?
+                            Iterate
+                        EndIf
+                        LockRec = "Y"
+                        OrdChk() //Reread the record.
+                        UpdDbFlds()
+                        Update L1ORDREC
+                        Chain SFL1 Key(sflrrn)
+                        MoveL ORDNUM SFORDNUM
+                        SFORDDATE = ORDDATE
+                        SFSHPDATE = ORDSHPDATE
+                        SFDELDATE = ORDDELDATE
+                        SFORDAMT = ORDAMOUNT
+                        SFSHPVIA = ORDSHPVIA
+                        Clear SFFILESTAT
+                        Update SFL1
+                        SetOn *IN12
+    // Updated message
+                        MID = "ORD0002"
+                        MoveL ORDNUM MTX
+                        CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+                    EndIf
+    // Re-open for the next update
+                    LockRec = "N"
+                    OrdChk()
+            EndSl
+        EndDo
+    EndSr
+    //*********************************************************************
+    //  EDIT THE SCREEN FIELDS
+    //*********************************************************************
+    BegSr EditFlds
+        SetOff IndList( *IN40, *IN41, *IN42 ) //Clear all error inds
+        SetOff IndList( *IN43, *IN44, *IN99 )
+        Move DTORDDATE CKorddate
+        Select
+            When ( CKorddate = *Zero )
+                SetOn IndList( *IN40, *IN99 )
+                MID = "ORD0004" // Blank field.
+                MTX = "Order Date"
+            When ( DTSHPVIA= *zero )
+                SetOn IndList( *IN42, *IN99 )
+                MID = "Ord0005" // Blank field.
+                MTX = "Ship Via"
+        EndSl
+        If( *IN99)
+            CallD Pgm( "ACME.SunFarm.MSGLOD"  ) ParmList(#PLMSG)
+        EndIf
+    EndSr
+    //*********************************************************************
+    //  UPDATE THE DATABASE FIELDS
+    //*********************************************************************
+    BegSr UpdDbFlds
+        ORDNUM = DTORDNUM
+        Move DTORDDATE ORDDATE
+        Move DTSHPDATE ORDSHPDATE
+        ORDDELDATE = DTDELDATE
+        Move DTSHPVIA ORDSHPVIA
+    EndSr
+    //********************************************************************
+    //   CHECK THE ORDER NUMBER
+    //********************************************************************
+    BegSr OrdChk
+        If( LockRec = "N" )
+            Chain L1ORDREC_ReadOnly Key(ORDNUM) NotFnd(*IN80) // Removed Access(*NoLock)
+            OrderHdrL1.StatusCode = OrderHdrL1_ReadOnly.StatusCode
+        Else
+            Chain L1ORDREC Key(ORDNUM) NotFnd(*IN80)
+        EndIf
+    EndSr
+    //*********************************************************************
+    //  Load Sfl Subroutine
+    //*********************************************************************
+    BegSr LoadSfl
+        SetOff *IN61 //Start with green.
+        *IN90 = "1" //Clear the subfile.
+        Write SFLC
+        SetOff IndList( *IN76, *IN90 ) //Display records.
+        Clear SFFILESTAT
+        sflrrn = 0
+        ReadE From(L2ORDREC) Key(CustNo) Eof(*IN77)
+    //----------------------------------------------------------
+        DoWhile ( *Not *IN77  /* EOF or full s/f. */ +
+            *And ( sflrrn < 9999 ) )
+            SFORDNUM = ORDNUM
+            SFORDDATE = ORDDATE
+            SFSHPDATE = ORDSHPDATE
+            SFDELDATE = ORDDELDATE
+            SFORDAMT = ORDAMOUNT
+            SFSHPVIA = ORDSHPVIA
+            If( *IN61) //Save the color of
+                SFCOLOR = "W"
+            Else
+                SFCOLOR = "G"
+            EndIf
+            sflrrn = sflrrn + 1
+            Write SFL1
+            *IN61 = (*Not *IN61) //Reverse the color.
+            ReadE From(L2ORDREC) Key(CustNo) Eof(*IN77)
+        EndDo
+    // Any records found?
+        If( sflrrn = 0 )
+            sflrrn = 1
+            Move *ZEROS SFORDNUM
+            ORDNUM = 0
+            Clear SFORDDATE
+            Clear SFSHPDATE
+            MoveL *Zeros SFDELDATE
+            SFFILESTAT = "NoOr"
+            SFORDAMT = *ZERO
+            Move *ZEROS SFSHPVIA
+            Write SFL1
+            Clear SFFILESTAT
+        EndIf
+    EndSr
+    //*********************************************************************
+    //  Read Backwards for a PageDown
+    //*********************************************************************
+    BegSr ReadBack
+        SetOff IndList( *IN76, *IN77 )
+        X = 0
+        Chain SFL1 Key(1) //Get the top ord nbr
+        ORDNUM = SFORDNUM
+        Chain L2ORDREC Key(KeyMastL2)
+        ReadPE From(L2ORDREC) Key(CustNo) Bof(*IN76)
+        DoWhile ( *Not *IN76  /* EOF or full s/f. */ +
+            *And ( X < 10 ) )
+            X = X + 1
+            ReadPE From(L2ORDREC) Key(CustNo) Bof(*IN76)
+        EndDo
+        If( *IN76) //Top of file or diff
+            ORDNUM = 0
+            SetLL L2ORDREC Key(KeyMastL2)
+        EndIf
+    EndSr
+    //*********************************************************************
+    // CLEAR THE SELECTION NUMBER
+    //*********************************************************************
+    BegSr ClearSel
+        SFSEL = 0
+        *IN61 = (SFCOLOR = "W")
+        Update SFL1
+    EndSr
+    //*********************************************************************
+    // CLEAR THE MESSAGE QUEUE
+    //*********************************************************************
+    BegSr ClearMsgs
+        CallD Pgm( "ACME.SunFarm.MSGCLR"  )
+        MID = *Blank
+    EndSr
+    //*********************************************************************
+    //     * Init Subroutine
+    //*********************************************************************
+    BegSr PROCESS_STAR_INZSR
+        SetLL L2ORDREC Key(CustNo)
+        LoadSfl()
+        *IN75 = *On
+        MID = *Blank
+        @PGMQ = "*"
+        CallD Pgm( "ACME.SunFarm.MSGCLR"  )
+    // Message handling parm list
+        // PLIST "#PLMSG" moved by Monarch to global scope.
+    EndSr
+    
+    BegSr Reset_#pNbrs
+        #pNbrs = *Zeros
+    EndSr
+ 
+EndClass
+// /Error There are 1 NoLock Sequential Read operations. Using *NoLock on a file opened for *Update is not supported with DSS .NET
+// /Error There are 1 NoLock CHAIN operations. Using *NoLock on a file opened for *Update is not supported with DSS .NET

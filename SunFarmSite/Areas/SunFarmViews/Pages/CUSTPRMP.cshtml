@@ -1,0 +1,57 @@
+﻿@page
+@model CUSTPRMP
+@{
+    ViewData["Title"] = "CUSTPRMP";
+    int pageTabIndex = 1;
+}
+
+@* Migrated on 8/25/2023 at 5:23 PM by ASNA Monarch(R) version 11.4.12.0 *@
+@* Legacy location: library ERCAP, file QDDSSRC, member CUSTPRMP *@
+
+
+<form id="MonarchForm" method="post">
+    <DdsFile DisplayPageModel="Model" KeyNames="F12 'Cancel';" >
+
+        <DdsFunctionKeys />
+
+        <main role="main" class="display-element-uninitialized">
+            <DdsRecord For="MYWINDOW" WindowLeftCol=30 WindowTopRow=9 WindowWidthCols=43 WindowHeightRows=14 WindowTitle=@Model.MYWINDOW.WINTITLE>
+                @{
+                    int SFLC_SubfilePage = 8;
+                }
+                <DdsSubfileControl For="SFLC"  SubfilePage="@SFLC_SubfilePage" ShowRecordNumber="(int)@Model.SFLC.SFLRRN" ShowRecordAtTop=true CueCurrentRecord=true ClickSetsCurrentRecord=true>
+                    <div Row="2">
+                        <DdsConstant Col="2" Text="1=Select" Color="Blue" />
+                    </div>
+                    <div Row="4">
+                        <DdsConstant Col="2" Text="Sel Value Description                     " Color="DarkBlue" Underline="*True" />
+                    </div>
+                    <div Row="5" RowSpan="@SFLC_SubfilePage">
+                        @for (int rrn=0; rrn < Model.SFLC.SFL1.Count; rrn++)
+                        {
+                            int row = 5 + rrn;
+                            <DdsSubfileRecord RecordNumber="rrn" For="SFLC.SFL1">
+                                <DdsDecField Col="3" For="SFLC.SFL1[rrn].SFLSEL" VirtualRowCol="@row,3" EditCode="Z" tabIndex=@pageTabIndex++ />
+                                <DdsCharField Col="6" For="SFLC.SFL1[rrn].SFLVALUE" />
+                                <DdsCharField Col="12" For="SFLC.SFL1[rrn].SFLDESC" />
+                            </DdsSubfileRecord>
+                        }
+                    </div>
+                </DdsSubfileControl> @* SFLC *@
+                <div Row="14">
+                    <DdsConstant Col="2" Text="F12=Cancel" Color="Blue" />
+                </div>
+
+                <DdsMessagePanel class="dds-message-panel"/>
+
+            </DdsRecord> @* MYWINDOW *@
+            <DdsRecord For="DUMMY">
+                <div Row="24">
+                </div>
+            </DdsRecord> @* DUMMY *@
+
+            <DdsMessagePanel class="dds-message-panel"/>
+
+        </main>
+    </DdsFile>
+</form>

@@ -1,0 +1,34 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QCLSRC, member RUNCI
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using System.Collections
+Using System.Collections.Specialized
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+
+BegClass RUNCI Extends(CLProgram) Access(*Public) + 
+   Attributes(System.ComponentModel.Description("Run Customer Inquiry"))
+
+
+
+//------------------------------------------------------------------------------ 
+//  "*Entry" Mainline Code (Monarch generated)
+//------------------------------------------------------------------------------ 
+    BegProc *Entry Access( *Public )
+
+        *INLR = *ON
+
+        Try
+            AddLibLEntry("ERCAP")
+        Catch Type( CPF2103Exception )  /* LIBRARY SO_AND_SO ALREADY IN LIBL */
+        EndTry
+        CallD Pgm( "ACME.SunFarm.CUSTINQ"  )
+
+
+    EndProc
+
+EndClass

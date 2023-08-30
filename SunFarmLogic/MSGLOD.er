@@ -1,0 +1,42 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QCLSRC, member MSGLOD
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using System.Collections
+Using System.Collections.Specialized
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+
+BegClass MSGLOD Extends(CLProgram) Access(*Public) + 
+   Attributes(System.ComponentModel.Description("Write messages to the msg subfile"))
+
+
+    DclFld _MSGID            Type( *Char    )     Len(7)
+    DclFld _MSGTXT           Type( *Char    )     Len(30)
+
+//------------------------------------------------------------------------------ 
+//  "*Entry" Mainline Code (Monarch generated)
+//------------------------------------------------------------------------------ 
+    BegProc *Entry Access( *Public )
+
+        DclSrParm _MSGID            By(*Reference)
+        DclSrParm _MSGTXT           By(*Reference)
+
+        *INLR = *ON
+
+
+        If (_MSGID *NE "       ") 
+            If (%SubST( _MSGID, 1, 3 ) *EQ "CST") 
+                SendProgramMessage (_MSGID, "CUSTMSGF", _MSGTXT )
+            Else
+                SendProgramMessage (_MSGID, "ITEMMSGF", _MSGTXT )
+            EndIf
+        EndIf
+
+
+    EndProc
+
+EndClass

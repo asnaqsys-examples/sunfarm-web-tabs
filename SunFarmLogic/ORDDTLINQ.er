@@ -1,0 +1,312 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QRPGSRC, member ORDDTLINQ
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+BegClass ORDDTLINQ Extends(Program) Access(*Public) + 
+   Attributes(ActivationGroup("*DFTACTGRP"), + 
+             System.ComponentModel.Description("Order Detail Inquiry and Maintenance")) + 
+   UsesCycle(*Yes)
+
+    DclWorkStnFile ORDDTLINQD DspFile("~\Areas\SunFarmViews\Pages\ORDDTLINQD") Subfile( SFL1,SflRRN )
+    DclDiskFile CUSTOMERL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( RCUSTOMER )
+    DclDiskFile ITEMMASTL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/ITEMMASTL1") ImpOpen(*No) RnmFmt( ITEM )
+    DclDiskFile ORDERHDRL2  Type(*Update) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/ORDERHDRL2") ImpOpen(*No) RnmFmt( RORDRHDR )
+    DclDiskFile ORDERHDRL2_ReadOnly  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/ORDERHDRL2") ImpOpen(*No) RnmFmt( RORDRHDR_ReadOnly )
+    DclDiskFile ORDERLINL2  Type(*Update) AddRec(*Yes) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/ORDERLINL2") ImpOpen(*No) RnmFmt( RORDLINE )
+    DclFld AddUpdDlt         Type( *Char    )    Len( 1   ) Inz( " " )
+    DclFld HiLineNbr         Type( *Packed  )    Len( 5,0 ) Inz( 0 )
+    DclFld OrderTotal        Type( *Packed  )    Len( 13,4 ) Inz( 0 )
+    DclFld OrderWgt          Type( *Packed  )    Len( 13,4 ) Inz( 0 ) //  Weight in ounces
+    DclFld OrderLbs          Type( *Packed  )    Len( 11,2 ) Inz( 0 ) //  Weight in pounds
+    DclFld SflRRN            Type( *Packed  )    Len( 5,0 ) Inz( 0 )
+    DclFld TempAmount        Type( *Packed  )    Len( 13,4 ) Inz( 0 )
+    DclFld TempAmt2          Type( *Packed  )    Len( 13,2 ) Inz( 0 )
+    DclFld TempWgt           Type( *Packed  )    Len( 13,4 ) Inz( 0 )
+    DclFld WINTITLE          Type( *Char    )    Len( 22  ) Inz( " " )
+    //********************************************************************
+ 
+// Fields defined in main C-Specs declared now as Global fields (Monarch generated)
+    DclFld pCUSTNO           Type( *Packed  )    Len( 9,0 )
+    DclFld pDeleteAll        Type( *Char    )    Len( 1   )
+    DclFld pItmNbr           Type( *Packed  )    Len( 9,0 )
+    DclFld pORDNBR           Type( *Packed  )    Len( 9,0 )
+    DclFld pSelOnly          Type( *Char    )    Len( 1   )
+ 
+    // KLIST(s) relocated by Monarch
+    DclKList KeyHeadL2
+        DclKFld pCUSTNO 
+        DclKFld pORDNBR 
+    
+    DclKList KeyLineL2
+        DclKFld ORDNUMBER 
+        DclKFld ORDLINNUM 
+    
+ 
+/region Constructor and Dispose 
+    BegConstructor Access(*Public)
+        Open CUSTOMERL1 DB(CurrentJob.Database)
+        Open ITEMMASTL1 DB(CurrentJob.Database)
+        Open ORDERHDRL2 DB(CurrentJob.Database)
+        Open ORDERHDRL2_ReadOnly DB(CurrentJob.Database)
+        Open ORDERLINL2 DB(CurrentJob.Database)
+    EndConstructor
+ 
+    BegSr Dispose  Access( *Public ) Modifier(*Overrides)
+        DclSrParm disposing Type(*Boolean)
+        If( disposing )
+            Close *All
+        EndIf
+        *Base.Dispose(disposing)
+    EndSr
+ 
+ 
+/endregion
+    BegProc *Entry Access(*Public)
+        DclSrParm pCUSTNO           By(*Reference)
+        DclSrParm pORDNBR           By(*Reference)
+        DclSrParm pDeleteAll        By(*Reference)
+ 
+ 
+    //********************************************************************
+        // KLIST "KeyHeadL2" moved by Monarch to global scope.
+        // KLIST "KeyLineL2" moved by Monarch to global scope.
+    // DELETE ALL THE DETAIL LINE ITEM RECORDS ***************************
+        If( pDeleteAll = "Y" )
+            ORDNUMBER = pORDNBR
+            ORDLINNUM = 0
+            SetLL ORDERLINL2 Key(KeyLineL2)
+            ReadE From(ORDERLINL2) Key(ORDNUMBER) Eof(*INLR)
+            DoWhile ( *INLR = *Off ) //EOF?
+                Delete From(RORDLINE)
+                ReadE From(ORDERLINL2) Key(ORDNUMBER) Eof(*INLR)
+            EndDo
+            Return 
+        EndIf
+    //********************************************************************
+        DoWhile ( *Not *IN12)
+            Write KEYS
+            ExFmt SFLC 
+            If( *IN12)
+                *INLR = *On
+                Leave
+            EndIf
+            If( *IN06) // Add a line item.
+                Move "A" AddUpdDlt
+                RcdUpdate()
+                SetOff *IN12 // Make sure it's off.
+                LoadData()
+                Iterate
+            EndIf
+            ReadC SFL1 Eof(*IN66)
+            If( *Not *IN66)
+                If( SFSEL = 4 ) // Delete the line.
+                    Move "D" AddUpdDlt
+                    RcdDelete()
+                    SetOff *IN12 // Make sure it's off.
+                EndIf
+                If( SFSEL = 2 ) // Change the line.
+                    Move "U" AddUpdDlt
+                    RcdUpdate()
+                    SetOff *IN12 // Make sure it's off.
+                EndIf
+            EndIf
+            LoadData()
+        EndDo
+    //*********************************************************************
+        Chain ORDERHDRL2 Key(KeyHeadL2) NotFnd(*IN66)
+        ORDAMOUNT = OrderTotal
+        ORDWEIGHT = OrderWgt
+        Update RORDRHDR
+    //*********************************************************************
+    // UPDATE THE DETAIL RECORD
+    //*********************************************************************
+    EndProc
+    BegSr RcdUpdate
+        If( AddUpdDlt = "U" )
+            WINTITLE = "Line Item Update"
+            SLINNBR = SFLINNBR
+            SITMNBR = SFITMNBR
+            SQTYORD = SFQTYORD
+            *IN88 = *On // Protect item nbr.
+        Else
+            WINTITLE = "Add a Line Item"
+            SLINNBR = 0
+            SITMNBR = 0
+            SQTYORD = 0
+            *IN88 = *Off
+        EndIf
+        SetOff IndList( *IN40, *IN41, *IN99 )
+        SetOff *IN89 // Enable the qty fld.
+    //-----------------------------------------------------------
+        DoWhile ( *Not *IN12)
+            Write MYWINDOW
+            ExFmt ORDLINE 
+            If( *IN04) // Prompting?
+                CallD Pgm( "ACME.SunFarm.ITEMINQ"  )
+                    DclParm CpyFrom("Y") Name(pSelOnly)
+                    DclParm pItmNbr
+                SITMNBR = pItmNbr
+                *IN90 = *Off // This fmt must be
+                Write SFLC //  redisplayed again
+                Iterate
+            EndIf
+            If( *Not *IN12)
+                EditFlds()
+                If( *IN99 )
+                    Iterate
+                EndIf
+                UpdDbFlds()
+                Leave
+            EndIf
+        EndDo
+        SetOff *IN12 //Reset the F12 key.
+    EndSr
+    //*********************************************************************
+    // DELETE THE DETAIL RECORD
+    //*********************************************************************
+    BegSr RcdDelete
+        ClearSel()
+        WINTITLE = "Confirm Line Delete"
+        SLINNBR = SFLINNBR
+        SITMNBR = SFITMNBR
+        SQTYORD = SFQTYORD
+        SetOff IndList( *IN40, *IN41, *IN99 ) // Turn off errors.
+        SetOn IndList( *IN88, *IN89 ) // Protect fields.
+        Write MYWINDOW
+        ExFmt ORDLINE 
+        If( *Not *IN12)
+            UpdDbFlds()
+        EndIf
+    EndSr
+    //*********************************************************************
+    //  EDIT THE SCREEN FIELDS
+    //*********************************************************************
+    BegSr EditFlds
+        SetOff IndList( *IN40, *IN41, *IN99 ) //Clear all error inds
+        Select
+            When ( SITMNBR = 0 )
+                SetOn IndList( *IN40, *IN99 )
+            When ( SQTYORD = 0 )
+                SetOn IndList( *IN41, *IN99 )
+            Other
+                ITEMNUMBER = SITMNBR
+                Chain ITEMMASTL1 Key(ITEMNUMBER) NotFnd(*IN99)
+                SetOn *IN40
+        EndSl
+    EndSr
+    //*********************************************************************
+    //  UPDATE THE DATABASE FIELDS
+    //*********************************************************************
+    BegSr UpdDbFlds
+        Select
+            When( AddUpdDlt = "A" )
+                ORDLINNUM = HiLineNbr + 1
+                ORDNUMBER = pORDNBR
+                ORDITEMNUM = SITMNBR
+                ORDLQTY = SQTYORD
+                ORDLQTYBKO = 0
+                ORDLQTYSHP = 0
+                ORDLQTYDEL = 0
+                Write RORDLINE
+                OrderTotal = OrderTotal +(SQTYORD * ITEMPRICE)
+                OrderWgt = OrderWgt +(SQTYORD * ITEMWEIGHT)
+            When( AddUpdDlt = "U" )
+                ORDNUMBER = pORDNBR
+                ORDLINNUM = SFLINNBR
+                Chain ORDERLINL2 Key(KeyLineL2)
+                TempAmount = ORDLQTY * ITEMPRICE
+                TempWgt = ORDLQTY * ITEMWEIGHT
+                ORDITEMNUM = SITMNBR
+                ORDLQTY = SQTYORD
+                Update RORDLINE
+                OrderTotal = OrderTotal - TempAmount + (SQTYORD*ITEMPRICE)
+                OrderWgt = OrderWgt - TempWgt + (SQTYORD*ITEMWEIGHT)
+            When( AddUpdDlt = "D" )
+                ORDNUMBER = pORDNBR
+                ORDLINNUM = SFLINNBR
+                Chain ORDERLINL2 Key(KeyLineL2)
+                Delete From(RORDLINE)
+                OrderTotal = OrderTotal - (SQTYORD*ITEMPRICE)
+                OrderWgt = OrderWgt - (SQTYORD*ITEMWEIGHT)
+        EndSl
+        TempAmt2 = OrderTotal // Change the total to
+        SORDAMOUNT = "$" +%Trim(%EditC(TempAmt2:"1")) //   to show 2 decimal
+        DIV F1(OrderWgt) F2(16) Result(OrderLbs)
+        SORDWEIGHT = %Trim(%EditC(OrderLbs:"1")) +" Lbs"
+    EndSr
+    //*********************************************************************
+    //  Load the Subfile Control and Subfile Records
+    //*********************************************************************
+    BegSr LoadData
+        *IN90 = *On //Clear the subfile.
+        Write SFLC
+        *IN90 = *Off
+        SFSEL = 0
+        SflRRN = 0
+        ORDNUMBER = pORDNBR
+        ORDLINNUM = 0
+        SetLL ORDERLINL2 Key(KeyLineL2)
+        ReadE From(ORDERLINL2) Key(ORDNUMBER) Eof(*IN77)
+    //----------------------------------------------------------
+        DoWhile ( *Not *IN77) //EOF?
+            HiLineNbr = ORDLINNUM
+            SFLINNBR = ORDLINNUM
+            SFITMNBR = ORDITEMNUM
+            Chain ITEMMASTL1 Key(ORDITEMNUM) NotFnd(*IN66)
+            SFITMDESC = ITEMSHRTDS
+            SFPRICE = ITEMPRICE
+            SFQTYORD = ORDLQTY
+            SFEXTAMT = ORDLQTY * ITEMPRICE
+            SflRRN = SflRRN + 1
+            Write SFL1
+            ReadE From(ORDERLINL2) Key(ORDNUMBER) Eof(*IN77)
+        EndDo
+        If( SflRRN = 0 )
+            SFITMDESC = "No Line Items Found"
+            SflRRN = SflRRN + 1
+            Write SFL1
+        EndIf
+    EndSr
+    //*********************************************************************
+    // CLEAR THE SELECTION NUMBER
+    // Ignore the error if the update fails - it may be the first line.
+    //*********************************************************************
+    BegSr ClearSel
+        SFSEL = 0
+        Update SFL1 Err(*IN99)
+    EndSr
+    //*********************************************************************
+    // Init Subroutine
+    //*********************************************************************
+    BegSr PROCESS_STAR_INZSR
+        Chain CUSTOMERL1 Key(pCUSTNO) NotFnd(*IN66)
+        If( *IN66)
+            CMNAME = "? ? ?"
+            CMCITY = *Blanks
+            CMSTATE = *Blanks
+        EndIf
+        SCRCUST = %Trim(%EditC(CMCUSTNO:"Z")) +" " + %Trim(CMNAME) + " (" +%Trim(CMCITY) + ", " +%Trim(CMSTATE) + ")" 
+        Chain ORDERHDRL2_ReadOnly Key(KeyHeadL2) NotFnd(*IN66) // Removed Access(*NoLock)
+        ORDERHDRL2.StatusCode = ORDERHDRL2_ReadOnly.StatusCode
+        If( *Not *IN66)
+            SORDNUM = pORDNBR
+            SORDDATE = ORDDATE
+            OrderTotal = ORDAMOUNT
+            TempAmt2 = ORDAMOUNT // Change the total to
+            SORDAMOUNT = "$" +%Trim(%EditC(TempAmt2:"1")) //   to show 2 decimal
+            OrderWgt = ORDWEIGHT
+            DIV F1(OrderWgt) F2(16) Result(OrderLbs)
+            SORDWEIGHT = %Trim(%EditC(OrderLbs:"1")) +" Lbs"
+        EndIf
+        SflRRN = 0
+        LoadData()
+        *IN75 = *On
+    EndSr
+ 
+EndClass
+// /Error There are 1 NoLock CHAIN operations. Using *NoLock on a file opened for *Update is not supported with DSS .NET

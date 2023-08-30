@@ -1,0 +1,133 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QRPGSRC, member CUSTPRTS
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+BegClass CUSTPRTS Extends(Program) Access(*Public) + 
+   Attributes(ActivationGroup("*DFTACTGRP"), + 
+             System.ComponentModel.Description("Print a Customer's Sales/Credits Details")) + 
+   UsesCycle(*Yes)
+
+    DclDiskFile CSMASTERL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CSMASTERL1") ImpOpen(*No) RnmFmt( RCSMASTL1 )
+    DclDiskFile CUSTOMERL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( RCUSTOMER )
+    // DclPrintFile QPRINT DB(MyJob.MyPrinterDB) File("REPORTS\CUSTPRTS") UsesPageFlds(*Yes) ImpOpen(*No) OverflowInd(*InOF) 
+    DclConst QPRINT_PrintLineHeight 50 Access(*Internal) // Notes: Units are LOMETRIC (one hundredth of a centimeter). The constant used came from the Global Directive defaults.
+    //********************************************************************
+    //   U1 Print sales
+    //   U2 Print credits
+    //********************************************************************
+    DclDs pNumberAlf Len(9)
+        DclDsFld pNumber           Type( *Zoned   )    Len( 9,0 )
+    
+    DclFld wCount            Type( *Packed  )    Len( 7,0 ) Inz( 0 )
+    DclFld wPrevYr           Type( *Packed  )    Len( 4,0 ) Inz( 9999 )
+    DclFld wPrtYr            Type( *Packed  )    Len( 4,0 ) Inz( 9999 )
+    DclFld wUnderline        Type( *Char    )    Len( 120 ) Inz( *All"-" )
+    DclFld X                 Type( *Integer2 )     Inz( 0 )
+    DclDs CUSTSL ExtDesc(*Yes) DbDesc(MyJob.MyDatabase) FileDesc("*LIBL/CSMASTER")
+        DclDsFld SlsArray          Type( *Packed  ) Len( 11 ,2 ) Dim( 12 ) StartAt(11)
+    
+    RnmFlds DsName( CUSTSL     )                           +
+    Flds                                            +
+    (                                              +
+    CSCUSTNO  ,  CSCUSTNO  ,  +
+    CSSALES01 ,  CSSALES01 ,  +
+    CSSALES02 ,  CSSALES02 ,  +
+    CSSALES03 ,  CSSALES03 ,  +
+    CSSALES04 ,  CSSALES04 ,  +
+    CSSALES05 ,  CSSALES05 ,  +
+    CSSALES06 ,  CSSALES06 ,  +
+    CSSALES07 ,  CSSALES07 ,  +
+    CSSALES08 ,  CSSALES08 ,  +
+    CSSALES09 ,  CSSALES09 ,  +
+    CSSALES10 ,  CSSALES10 ,  +
+    CSSALES11 ,  CSSALES11 ,  +
+    CSSALES12 ,  CSSALES12 ,  +
+    CSTYPE    ,  CSTYPE    ,  +
+    CSYEAR    ,  CSYEAR      + 
+    )
+    DclDs  Len(429)
+        DclDsFld sUserId           Type( *Char    )    Len( 10  ) StartAt(254)
+    
+    //**********************************************************************
+    //**********************************************************************
+/region Constructor and Dispose 
+    BegConstructor Access(*Public)
+        Open CSMASTERL1 DB(CurrentJob.Database)
+        Open CUSTOMERL1 DB(CurrentJob.Database)
+        // QPRINT.Printer = "Microsoft Print to PDF"
+        // QPRINT.ManuscriptPath = Spooler.GetNewFilePath(QPRINT.DclPrintFileName)
+        // Open QPRINT DB(CurrentJob.PrinterDB)
+        // Open QPRINT DB(CurrentJob.PrinterDB)
+
+/region Populate Program Status Data Structure
+        sUserId = CurrentJob.PsdsJobUser.ToUpper()
+/endregion
+    EndConstructor
+ 
+    BegSr Dispose  Access( *Public ) Modifier(*Overrides)
+        DclSrParm disposing Type(*Boolean)
+        If( disposing )
+            Close *All
+        EndIf
+        *Base.Dispose(disposing)
+    EndSr
+ 
+ 
+/endregion
+    BegProc *Entry Access(*Public)
+        DclSrParm pNumberAlf        By(*Reference)
+ 
+ 
+    //----------------------------------------------------------------------
+        Chain CUSTOMERL1 Key(pNumber) NotFnd(*IN80)
+        If( *IN80 )
+            MoveL "????????" CMNAME
+        EndIf
+        // Write PrtHeading
+        SetLL CSMASTERL1 Key(pNumber)
+        ReadE From(CSMASTERL1) Key(pNumber) Eof(*INLR)
+    //----------------------------------------------------------------------
+        DoWhile ( *INLR = *Off )
+            If( CSYEAR = wPrevYr )
+                wPrtYr = 0
+            Else
+                wPrtYr = CSYEAR
+                wPrevYr = CSYEAR
+            EndIf
+            ChkTheInfo()
+            ReadE From(CSMASTERL1) Key(pNumber) Eof(*INLR)
+        EndDo
+    //----------------------------------------------------------------------
+        // Write PrtCount
+    //**********************************************************************
+    //**********************************************************************
+    EndProc
+    BegSr ChkTheInfo
+        Do FromVal(1) ToVal(12) Index(X)
+            If( CurrentJob.GetSwitch(1) = *Off   /*  Don't print sales */ +
+                *And ( SlsArray[X-1] > 0 ) )
+                SlsArray[X-1] = 0
+            EndIf
+            If( CurrentJob.GetSwitch(2) = *Off   /*  Don't print credits */ +
+                *And ( SlsArray[X-1] < 0 ) )
+                SlsArray[X-1] = 0
+            EndIf
+        EndDo
+    // IS THERE ANYTHING TO PRINT? -----------------------------------------
+        Do FromVal(1) ToVal(12) Index(X)
+            If( SlsArray[X-1] <> 0 )
+                // Write PrtDetail
+                wCount = wCount + 1
+                Leave
+            EndIf
+        EndDo
+    EndSr
+    //**********************************************************************
+    //**********************************************************************
+ 
+EndClass

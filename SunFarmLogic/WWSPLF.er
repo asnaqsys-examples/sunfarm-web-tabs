@@ -1,0 +1,29 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QCLSRC, member WWSPLF
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using System.Collections
+Using System.Collections.Specialized
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+
+BegClass WWSPLF Extends(CLProgram) Access(*Public) + 
+   Attributes(System.ComponentModel.Description("Customer Maintenance"))
+
+
+
+//------------------------------------------------------------------------------ 
+//  "*Entry" Mainline Code (Monarch generated)
+//------------------------------------------------------------------------------ 
+    BegProc *Entry Access( *Public )
+
+        *INLR = *ON
+// /Error CL Legacy line: WRKSPLF
+// /Error Unsupported: CL Command - WRKSPLF.
+
+    EndProc
+
+EndClass

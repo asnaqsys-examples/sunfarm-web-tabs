@@ -1,0 +1,136 @@
+﻿// ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
+// Migrated source location: library ERCAP, file QRPGSRC, member CUSTDELIV
+
+Using ACME.SunFarmCustomers_Job
+
+Using System
+Using ASNA.QSys.Runtime
+Using ASNA.QSys.Runtime.JobSupport
+
+BegClass CUSTDELIV Extends(Program) Access(*Public) + 
+   Attributes(ActivationGroup("*DFTACTGRP"), + 
+             System.ComponentModel.Description("Customer Subfile Delivey Inquiry")) + 
+   UsesCycle(*Yes)
+
+    //********************************************************************
+    // JB   8/31/2004   Created.
+
+    //********************************************************************
+    DclDiskFile CUSTOMERL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( RCUSTOMER )
+    DclDiskFile CAMASTER  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CAMASTER") ImpOpen(*No) RnmFmt( RCAMASTER )
+    DclWorkStnFile CUSTDELIV_File DspFile("~\Areas\SunFarmViews\Pages\CUSTDELIV") Subfile( SFL1,sflrrn )
+    //********************************************************************
+    // Customer DS
+    DclDs CUSTDS ExtDesc(*Yes) DbDesc(MyJob.MyDatabase) FileDesc("*LIBL/CUSTOMER")
+    RnmFlds DsName( CUSTDS     )                           +
+    Flds                                            +
+    (                                              +
+    CMACTIVE  ,  CMACTIVE  ,  +
+    CMADDR1   ,  CMADDR1   ,  +
+    CMADDR2   ,  CMADDR2   ,  +
+    CMCITY    ,  CMCITY    ,  +
+    CMCONEMAL ,  CMCONEMAL ,  +
+    CMCONTACT ,  CMCONTACT ,  +
+    CMCUSTNO  ,  CMCUSTNO  ,  +
+    CMFAX     ,  CMFAX     ,  +
+    CMNAME    ,  CMNAME    ,  +
+    CMPHONE   ,  CMPHONE   ,  +
+    CMPOSTCODE                    ,  CMPOSTCODE                    ,  +
+    CMSTATE   ,  CMSTATE   ,  +
+    CMUSRFLGS ,  CMUSRFLGS ,  +
+    CMYN01    ,  CMYN01    ,  +
+    CMYN02    ,  CMYN02    ,  +
+    CMYN03    ,  CMYN03      + 
+    )
+    //********************************************************************
+ 
+// Fields defined in main C-Specs declared now as Global fields (Monarch generated)
+    DclFld pNumber           Type( *Packed  )    Len( 9,0 )
+    DclFld savrrn            Type( *Packed  )    Len( 4,0 )
+    DclFld sflrrn            Type( *Packed  )    Len( 4,0 )
+ 
+/region Constructor and Dispose 
+    BegConstructor Access(*Public)
+        Open CAMASTER DB(CurrentJob.Database)
+        Open CUSTOMERL1 DB(CurrentJob.Database)
+    EndConstructor
+ 
+    BegSr Dispose  Access( *Public ) Modifier(*Overrides)
+        DclSrParm disposing Type(*Boolean)
+        If( disposing )
+            Close *All
+        EndIf
+        *Base.Dispose(disposing)
+    EndSr
+ 
+ 
+/endregion
+    BegProc *Entry Access(*Public)
+        DclSrParm pNumber           By(*Reference)
+ 
+ 
+        DoWhile ( *Not *IN12)
+            *IN90 = "0"
+            Write KEYS
+            ExFmt SFLC 
+    // exit
+            If( *IN12)
+                *INLR = "1"
+                Leave
+            EndIf
+            *IN30 = "0"
+            savrrn = sflrrn
+            ReadC SFL1 Eof(*IN40)
+            DoWhile ( *Not *IN40)
+                If( SFLSEL = "1" )
+                    Chain SFL1 Key(sflrrn)
+                    Something()
+                    Move *Blanks SFLSEL
+                    Update SFL1
+                EndIf
+                ReadC SFL1 Eof(*IN40)
+            EndDo
+            sflrrn = savrrn
+        EndDo
+    //****************************************
+
+    //****************************************
+    EndProc
+    BegSr Something
+    EndSr
+    //**********************
+    //  Load Sfl Subroutine
+    //**********************
+    BegSr LoadSfl
+        ReadE From(CAMASTER) Key(pNumber) Eof(*IN99)
+        DoWhile ( *Not *IN99)
+            SFLCUST# = CACUSTNO
+            MoveL CANAME SFLCUST
+            SFLCITY = %TrimR(CACITY) + ", "+ CASTATE
+            MoveL CAZIP SFLZIP
+            sflrrn = sflrrn + 1
+            Write SFL1
+            ReadE From(CAMASTER) Key(pNumber) Eof(*IN99)
+        EndDo
+    // end of file
+        If( sflrrn = 0 )
+            sflrrn = sflrrn + 1
+            CMCUSTNO = 0
+            SFLCUST = "No Address Records Found"
+            Move *Blanks SFLCITY
+            Move *Blanks SFLZIP
+            Write SFL1
+        EndIf
+    EndSr
+    //*********************
+    // Init Subroutine
+    //*********************
+    BegSr PROCESS_STAR_INZSR
+        sflrrn = 0
+        *IN90 = "1"
+        Write SFLC
+        SetLL CAMASTER Key(pNumber)
+        LoadSfl()
+    EndSr
+ 
+EndClass
