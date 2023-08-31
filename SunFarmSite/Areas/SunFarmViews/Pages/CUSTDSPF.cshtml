@@ -18,7 +18,7 @@
             @{
                 int SFLC_SubfilePage = 14;
             }
-            <DdsSubfileControl For="SFLC" KeyNames="F9 'Spooled Files';"  SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
+            <DdsSubfileControl For="SFLC" StretchConstantText=false KeyNames="F9 'Spooled Files';" SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
                     <DdsConstant Col="31+1" Text="M5 Customer Inquiry" Color="DarkBlue" />
@@ -54,7 +54,7 @@
                     }
                 </div>
             </DdsSubfileControl> @* SFLC *@
-            <DdsRecord For="CUSTREC" KeyNames="F4 'Prompt'; F6 'New'; F11 'Delete'; F12 'Cancel';">
+            <DdsRecord For="CUSTREC" StretchConstantText=false KeyNames="F4 'Prompt'; F6 'New'; F11 'Delete'; F12 'Cancel';">
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
                     <DdsConstant Col="29+5" Text="M5 Customer Maintenance" Color="DarkBlue" />
@@ -69,49 +69,49 @@
                     <DdsCharField Col="35+5" For="CUSTREC.SFOLDNAME" Color="DarkBlue" />
                 </div>
                 <div Row="7">
-                    <DdsConstant Col="20" Text="Name:" />
+                    <DdsConstant Col="20" ColSpan="-1" class="right-aligned-constant" Text="Name:" />
                     <DdsCharField Col="27" For="CUSTREC.hSFNAME" DisplayAttrCode="@Model.CUSTREC.aSFNAME" VirtualRowCol="7,27" PositionCursor="40" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="8">
-                    <DdsConstant Col="17" Text="Address:" />
+                    <DdsConstant Col="17" ColSpan="-1" class="right-aligned-constant" Text="Address:" />
                     <DdsCharField Col="27" For="CUSTREC.SFADDR1" VirtualRowCol="8,27" PositionCursor="41" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="9">
                     <DdsCharField Col="27" For="CUSTREC.SFADDR2" VirtualRowCol="9,27" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="10">
-                    <DdsConstant Col="20" Text="City:" />
+                    <DdsConstant Col="20" ColSpan="-1" class="right-aligned-constant" Text="City:" />
                     <DdsCharField Col="27" For="CUSTREC.SFCITY" VirtualRowCol="10,27" PositionCursor="42" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="11">
-                    <DdsConstant Col="15" Text="State/Zip:" />
+                    <DdsConstant Col="15" ColSpan="-1" class="right-aligned-constant" Text="State/Zip:" />
                     <DdsCharField Col="27" For="CUSTREC.SFSTATE" VirtualRowCol="11,27" PositionCursor="43" tabIndex=@pageTabIndex++ />
                     <DdsConstant Col="30+5" Text="(F4)" Color="Blue" />
                     <DdsCharField Col="37+5" For="CUSTREC.SFPOSTCODE" VirtualRowCol="11,37" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="13">
-                    <DdsConstant Col="21" Text="Fax:" />
+                    <DdsConstant Col="21" ColSpan="-1" class="right-aligned-constant" Text="Fax:" />
                     <DdsDecField Col="27" For="CUSTREC.SFFAX" DisplayAttrCode="@Model.CUSTREC.aFAXPHONE" VirtualRowCol="13,27" EditWord="(   )   -    " tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="14">
-                    <DdsConstant Col="19" Text="Phone:" />
+                    <DdsConstant Col="19" ColSpan="-1" class="right-aligned-constant" Text="Phone:" />
                     <DdsCharField Col="27" For="CUSTREC.SFPHONE" DisplayAttrCode="@Model.CUSTREC.aFAXPHONE" VirtualRowCol="14,27" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="15">
-                    <DdsConstant Col="18" Text="Status:" />
+                    <DdsConstant Col="18" ColSpan="-1" class="right-aligned-constant" Text="Status:" />
                     <DdsCharField Col="27" For="CUSTREC.hsSTATUS" VirtualRowCol="15,27" PositionCursor="44" tabIndex=@pageTabIndex++ />
                     <DdsConstant Col="30+5" Text="(F4)" Color="Blue" />
                 </div>
                 <div Row="16">
-                    <DdsConstant Col="12" Text="Contact Name:" />
+                    <DdsConstant Col="12" ColSpan="-1" class="right-aligned-constant" Text="Contact Name:" />
                     <DdsCharField Col="27" For="CUSTREC.SFCONTACT" DisplayAttrCode="@Model.CUSTREC.aCONTACT" VirtualRowCol="16,27" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="17">
-                    <DdsConstant Col="11" Text="Contact eMail:" />
+                    <DdsConstant Col="11" ColSpan="-1" class="right-aligned-constant" Text="Contact eMail:" />
                     <DdsCharField Col="27" For="CUSTREC.SFCONEMAL" DisplayAttrCode="@Model.CUSTREC.aCONTACT" VirtualRowCol="17,27" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="18">
-                    <DdsConstant Col="7" Text="Send Confirmation:" />
+                    <DdsConstant Col="7" ColSpan="-1" class="right-aligned-constant" Text="Send Confirmation:" />
                     <DdsCharField Col="27" For="CUSTREC.SFYN01" VirtualRowCol="18,27" tabIndex=@pageTabIndex++ />
                     <DdsConstant Col="29+5" Text="(Y/N)" />
                 </div>
@@ -122,7 +122,7 @@
                     <DdsConstant Col="55+5" Text="F12=Cancel" Color="Blue" />
                 </div>
             </DdsRecord> @* CUSTREC *@
-            <DdsRecord For="SALESREC" KeyNames="F12 'Cancel';">
+            <DdsRecord For="SALESREC" StretchConstantText=false KeyNames="F12 'Cancel';">
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
                     <DdsConstant Col="28" Text="M5 Customer Sales/Returns" Color="DarkBlue" />
