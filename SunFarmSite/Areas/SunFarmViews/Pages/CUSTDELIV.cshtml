@@ -18,7 +18,7 @@
             @{
                 int SFLC_SubfilePage = 10;
             }
-            <DdsSubfileControl For="SFLC"  SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
+            <DdsSubfileControl For="SFLC" StretchConstantText=false SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
                     <DdsConstant Col="27+2" Text="M5 Customer Delivery Inquiry" Color="DarkBlue" />

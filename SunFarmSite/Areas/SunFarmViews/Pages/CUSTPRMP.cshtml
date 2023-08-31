@@ -15,11 +15,11 @@
         <DdsFunctionKeys Location="HorizontalBottom" />
 
         <main role="main" class="display-element-uninitialized">
-            <DdsRecord For="MYWINDOW" WindowLeftCol=30 WindowTopRow=9 WindowWidthCols=43 WindowHeightRows=14 WindowTitle=@Model.MYWINDOW.WINTITLE>
+            <DdsRecord For="MYWINDOW" StretchConstantText=false WindowLeftCol=30 WindowTopRow=9 WindowWidthCols=43 WindowHeightRows=14 WindowTitle=@Model.MYWINDOW.WINTITLE>
                 @{
                     int SFLC_SubfilePage = 8;
                 }
-                <DdsSubfileControl For="SFLC"  SubfilePage="@SFLC_SubfilePage" ShowRecordNumber="(int)@Model.SFLC.SFLRRN" ShowRecordAtTop=true CueCurrentRecord=true ClickSetsCurrentRecord=true>
+                <DdsSubfileControl For="SFLC" StretchConstantText=false SubfilePage="@SFLC_SubfilePage" ShowRecordNumber="(int)@Model.SFLC.SFLRRN" ShowRecordAtTop=true CueCurrentRecord=true ClickSetsCurrentRecord=true>
                     <div Row="2">
                         <DdsConstant Col="2" Text="1=Select" Color="Blue" />
                     </div>

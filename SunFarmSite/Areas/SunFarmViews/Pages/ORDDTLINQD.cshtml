@@ -15,7 +15,7 @@
         <DdsFunctionKeys Location="HorizontalBottom" />
 
         <main role="main" class="display-element-uninitialized">
-            <DdsRecord For="MYWINDOW" WindowLeftCol=26 WindowTopRow=9 WindowWidthCols=25 WindowHeightRows=6 WindowTitle=@Model.MYWINDOW.WINTITLE>
+            <DdsRecord For="MYWINDOW" StretchConstantText=false WindowLeftCol=26 WindowTopRow=9 WindowWidthCols=25 WindowHeightRows=6 WindowTitle=@Model.MYWINDOW.WINTITLE>
                 <DdsRecord For="ORDLINE" KeyNames="F4 'Prompt';">
                     <div Row="1">
                         <DdsCharField Col="2" For="ORDLINE.SDUMMY" VisibleCondition="!( !89 )" VirtualRowCol="1,2" tabIndex=@pageTabIndex++ />
@@ -44,7 +44,7 @@
             @{
                 int SFLC_SubfilePage = 12;
             }
-            <DdsSubfileControl For="SFLC" KeyNames="F6 'New';"  SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
+            <DdsSubfileControl For="SFLC" StretchConstantText=false KeyNames="F6 'New';" SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
                     <DdsConstant Col="29+2" Text="M5 Order Detail Inquiry" Color="DarkBlue" />
