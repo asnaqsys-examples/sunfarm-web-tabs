@@ -8,13 +8,13 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 #logo {
-    padding-left: 1em;
+    padding-left: 1rem;
 }
 
 #logo-text {
     display: inline-block;
     vertical-align: top;
-    margin-left: -41px;
+    margin-left: -3rem;
 }
 
 #logo-title {
