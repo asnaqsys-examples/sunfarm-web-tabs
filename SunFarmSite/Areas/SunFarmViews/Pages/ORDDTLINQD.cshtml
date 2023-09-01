@@ -45,9 +45,10 @@
                 int SFLC_SubfilePage = 12;
             }
             <DdsSubfileControl For="SFLC" StretchConstantText=false KeyNames="F6 'New';" SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
+                <span class="page-title">SunFarm Order Detail Inquiry</span>
+
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
-                    <DdsConstant Col="29+2" Text="M5 Order Detail Inquiry" Color="DarkBlue" />
                     <DdsConstant Col="64+2" Text=@DateTime.Today.ToString(@"MM\/dd\/yy") />
                     <DdsConstant Col="73+2" Text=@DateTime.Now.ToString("HH:mm:ss") />
                 </div>
