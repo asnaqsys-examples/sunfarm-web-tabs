@@ -109,9 +109,7 @@
                     <DdsCharField Col="27" For="CUSTREC.SFCONEMAL" DisplayAttrCode="@Model.CUSTREC.aCONTACT" VirtualRowCol="17,27" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="18">
-                    <DdsConstant Col="7" ColSpan="-1" class="right-aligned-constant" Text="Send Confirmation:" />
-                    <DdsCharField Col="27" For="CUSTREC.SFYN01" VirtualRowCol="18,27" tabIndex=@pageTabIndex++ />
-                    <DdsConstant Col="29+5" Text="(Y/N)" />
+                    <DdsCheckboxField Col="27" Text="Send Confirmation."  For="CUSTREC.SFYN01" VirtualRowCol="18,27" tabIndex=@pageTabIndex++ />
                 </div>
                 <div Row="23">
                     <DdsConstant Col="3" Text="F4=Prompt" Color="Blue" />
