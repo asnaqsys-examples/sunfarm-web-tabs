@@ -19,9 +19,10 @@
                 int SFLC_SubfilePage = 14;
             }
             <DdsSubfileControl StretchConstantText=false For="SFLC" SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
+                <span class="page-title">SunFarm Item Inquiry</span>
+
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
-                    <DdsConstant Col="31+1" Text="M5 Item Inquiry" Color="DarkBlue" />
                     <DdsConstant Col="64+1" Text=@DateTime.Today.ToString(@"MM\/dd\/yy") />
                     <DdsConstant Col="73+1" Text=@DateTime.Now.ToString("HH:mm:ss") />
                 </div>
@@ -50,9 +51,10 @@
                 </div>
             </DdsSubfileControl> @* SFLC *@
             <DdsRecord For="ITEMREC" StretchConstantText=false KeyNames="F4 'Prompt'; F6 'New'; F11 'Delete'; F12 'Previous';">
+                <span class="page-title">SunFarm Item Maintenance</span>
+
                 <div Row="1">
                     <DdsConstant Col="2" Text=@System.Environment.UserName />
-                    <DdsConstant Col="31" Text="M5 Item Maintenance" Color="DarkBlue" />
                     <DdsConstant Col="64" Text=@DateTime.Today.ToString(@"MM\/dd\/yy") />
                     <DdsConstant Col="73" Text=@DateTime.Now.ToString("HH:mm:ss") />
                 </div>
