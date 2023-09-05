@@ -144,8 +144,8 @@ namespace ACME.SunFarm.SunFarmViews
             public string SFCONEMAL { get; set; }
 
             [Char(1)]
+            [Values(typeof(string), "Y", "N")]
             public string SFYN01 { get; set; }
-
         }
 
         [
