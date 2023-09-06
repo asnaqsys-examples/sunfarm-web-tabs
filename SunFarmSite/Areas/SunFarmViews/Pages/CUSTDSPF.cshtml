@@ -169,19 +169,17 @@
 
         xAxis.dataFields.category = 'category';
 
-        const salesSeries = chart.series.push(new am4charts.ColumnSeries())
-        salesSeries.dataFields.valueY = 'sales';
-        salesSeries.dataFields.categoryX = 'category';
-        salesSeries.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+        const series = chart.series.push(new am4charts.ColumnSeries())
+        series.dataFields.valueY = 'amount';
+        series.dataFields.categoryX = 'category';
+        series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
 
-        salesSeries.columns.template.adapter.add("fill", columnColor );
-
-        const returnsSeries = chart.series.push(new am4charts.ColumnSeries())
-        returnsSeries.dataFields.valueY = 'amount';
-        returnsSeries.dataFields.categoryX = 'category';
-        returnsSeries.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
-
-        returnsSeries.columns.template.adapter.add("fill", columnColor);
+        series.columns.template.adapter.add("fill", (fill, target) => {
+            if (target.dataItem.index == 0) {
+                return 'blue';
+            }
+            return 'red';
+        });
 
         chart.data = [
             {
@@ -194,11 +192,4 @@
             }
         ];
    }
-
-    function columnColor(fill,target) {
-        if (target.dataItem.index == 0) {
-            return 'blue';
-        }
-        return 'red';
-    }
 </script>
