@@ -118,22 +118,20 @@
                 </div>
                 <div Row="2">
                     <DdsCharField Col="2" For="SALESREC.SCPGM" />
-                    <DdsConstant Col="32" Text="Sales Information" Color="DarkBlue" />
                 </div>
-                <div Row="7">
-                    <DdsDecField Col="20" For="SALESREC.SFCUSTNO" Color="DarkBlue" EditCode="Z" Comment="CUSTOMER NUMBER" />
-                    <DdsCharField Col="28" For="SALESREC.SFNAME" Color="DarkBlue" />
+                <div Row="3">
+                    <DdsConstant Col="2" Text="Customer Number" />
+                    <DdsDecField Col="15" For="SALESREC.SFCUSTNO" Color="DarkBlue" EditCode="Z" Comment="CUSTOMER NUMBER" />
                 </div>
-                <div Row="10">
-                    <DdsConstant Col="22" Text="Total Sales:" />
-                    <DdsDecField Col="35" For="SALESREC.SFSALES" Color="DarkBlue" EditCode="J" />
+                <div Row="4">
+                    <DdsConstant Col="2" Text="Customer Name" />
+                    <DdsCharField Col="15" For="SALESREC.SFNAME" Color="DarkBlue" />
                 </div>
-                <div Row="12">
-                    <DdsConstant Col="20" Text="Total Returns:" />
-                    <DdsDecField Col="35" For="SALESREC.SFRETURNS" Color="DarkBlue" EditCode="J" />
+                <div Row="5">
+
                 </div>
-                <div Row="23">
-                    <DdsConstant Col="3" Text="F12=Previous" Color="Blue" />
+                <div id="sales-chart-container">
+                    <div id="sales-chart">Sales Chart</div>
                 </div>
             </DdsRecord> @* SALESREC *@
             <DdsRecord For="KEYS">
@@ -158,3 +156,49 @@
         </main>
     </DdsFile>
 </form>
+
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script>
+    const CHART_ID = 'sales-chart';
+    const chartEl = document.getElementById('sales-chart');
+    if (chartEl) {
+        const chart = am4core.create(CHART_ID, am4charts.XYChart);
+        const xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        const yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+        xAxis.dataFields.category = 'category';
+
+        const salesSeries = chart.series.push(new am4charts.ColumnSeries())
+        salesSeries.dataFields.valueY = 'sales';
+        salesSeries.dataFields.categoryX = 'category';
+        salesSeries.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+
+        salesSeries.columns.template.adapter.add("fill", columnColor );
+
+        const returnsSeries = chart.series.push(new am4charts.ColumnSeries())
+        returnsSeries.dataFields.valueY = 'amount';
+        returnsSeries.dataFields.categoryX = 'category';
+        returnsSeries.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+
+        returnsSeries.columns.template.adapter.add("fill", columnColor);
+
+        chart.data = [
+            {
+                category: 'Total Sales',
+                amount: @Model.SALESREC.SFSALES
+            },
+            {
+                category: 'Total Returns',
+                amount: @Model.SALESREC.SFRETURNS
+            }
+        ];
+   }
+
+    function columnColor(fill,target) {
+        if (target.dataItem.index == 0) {
+            return 'blue';
+        }
+        return 'red';
+    }
+</script>

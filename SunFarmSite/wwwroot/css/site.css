@@ -42,3 +42,16 @@ for details on configuring this project to bundle and minify static web assets. 
     display: block;
     padding-top:0.5rem;
 }
+
+#sales-chart-container div {
+    margin: 0 auto;
+    width: 50%;
+    height: 20rem;
+}
+
+#sales-chart {
+    background-color: whitesmoke;
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: medium;
+}
