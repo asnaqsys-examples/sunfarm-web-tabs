@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassSet version="3">
+  <Namespace Name="ACME.SunFarm">
+    <Class Name="ORDHINQ">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\ORDHDSPF" FilePath="~\Areas\SunFarmViews\Pages\ORDHDSPF" FileType="WorkStnFile" FileFieldName="ORDHDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
+        <Record Name="MYWINDOW" OriginalName="MYWINDOW" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="ORDHREC" OriginalName="ORDHREC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFL1" OriginalName="SFL1" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="KEYS" OriginalName="KEYS" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSFC" OriginalName="MSGSFC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSF" OriginalName="MSGSF" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ORDERHDRL2" FileType="DBFile" FileFieldName="OrderHdrL2" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="ROrderHdrL2" OriginalName="ROrderHdrL2" Alias="L2ORDREC" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="ORDNUM" />
+            <Field Name="ORDCUST" />
+            <Field Name="ORDDATE" />
+            <Field Name="ORDSHPDATE" />
+            <Field Name="ORDDELDATE" />
+            <Field Name="ORDSHPVIA" />
+            <Field Name="ORDAMOUNT" />
+            <Field Name="ORDWEIGHT" />
+            <Field Name="ORDSHPCHG" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/OrderHdrL1" FileType="DBFile" FileFieldName="OrderHdrL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="ROrderHdrL1" OriginalName="ROrderHdrL1" Alias="L1ORDREC" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="ORDNUM" />
+            <Field Name="ORDCUST" />
+            <Field Name="ORDDATE" />
+            <Field Name="ORDSHPDATE" />
+            <Field Name="ORDDELDATE" />
+            <Field Name="ORDSHPVIA" />
+            <Field Name="ORDAMOUNT" />
+            <Field Name="ORDWEIGHT" />
+            <Field Name="ORDSHPCHG" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/OrderHdrL1" FileType="DBFile" FileFieldName="OrderHdrL1_ReadOnly" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="ROrderHdrL1" OriginalName="ROrderHdrL1" Alias="L1ORDREC_ReadOnly" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="ORDNUM" />
+            <Field Name="ORDCUST" />
+            <Field Name="ORDDATE" />
+            <Field Name="ORDSHPDATE" />
+            <Field Name="ORDDELDATE" />
+            <Field Name="ORDSHPVIA" />
+            <Field Name="ORDAMOUNT" />
+            <Field Name="ORDWEIGHT" />
+            <Field Name="ORDSHPCHG" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMERL1" FileType="DBFile" FileFieldName="CustomerL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCustomerL1" OriginalName="RCustomerL1" Alias="L1CUSTREC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <DSUsage DSName="OrdhDS" DBName="SQL_LINEAR" FilePath="*LIBL/ORDERHEADR" IsMods="false" IsGlobalScope="true" Access="" IsStatic="false" UsesBuffer="true">
+        <Renames>
+          <Field Name="ORDAMOUNT" Alias="ORDAMOUNT" />
+          <Field Name="ORDCUST" Alias="ORDCUST" />
+          <Field Name="ORDDATE" Alias="ORDDATE" />
+          <Field Name="ORDDELDATE" Alias="ORDDELDATE" />
+          <Field Name="ORDNUM" Alias="ORDNUM" />
+          <Field Name="ORDSHPCHG" Alias="ORDSHPCHG" />
+          <Field Name="ORDSHPDATE" Alias="ORDSHPDATE" />
+          <Field Name="ORDSHPVIA" Alias="ORDSHPVIA" />
+          <Field Name="ORDWEIGHT" Alias="ORDWEIGHT" />
+        </Renames>
+      </DSUsage>
+    </Class>
+  </Namespace>
+</ClassSet>

@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassSet version="3">
+  <Namespace Name="ACME.SunFarm">
+    <Class Name="ITEMINQ">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\ITEMDSPF" FilePath="~\Areas\SunFarmViews\Pages\ITEMDSPF" FileType="WorkStnFile" FileFieldName="ITEMDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
+        <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFL1" OriginalName="SFL1" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="ITEMREC" OriginalName="ITEMREC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="KEYS" OriginalName="KEYS" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSFC" OriginalName="MSGSFC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSF" OriginalName="MSGSF" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ITEMMASTL2" FileType="DBFile" FileFieldName="ITEMMASTL2" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RITEMMASTL2" OriginalName="RITEMMASTL2" Alias="L2RECFMT" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="ITEMNUMBER" />
+            <Field Name="ITEMDESC" />
+            <Field Name="ITEMSHRTDS" />
+            <Field Name="ITEMCATGRY" />
+            <Field Name="ITEMPRICE" />
+            <Field Name="ITEMWEIGHT" />
+            <Field Name="ITEMUNIT" />
+            <Field Name="ITEMQTYAVL" />
+            <Field Name="ITEMQTYORD" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ITEMMASTL1" FileType="DBFile" FileFieldName="ITEMMASTL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RITEMMASTL1" OriginalName="RITEMMASTL1" Alias="L1RECFMT" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="ITEMNUMBER" />
+            <Field Name="ITEMDESC" />
+            <Field Name="ITEMSHRTDS" />
+            <Field Name="ITEMCATGRY" />
+            <Field Name="ITEMPRICE" />
+            <Field Name="ITEMWEIGHT" />
+            <Field Name="ITEMUNIT" />
+            <Field Name="ITEMQTYAVL" />
+            <Field Name="ITEMQTYORD" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ITEMMASTL1" FileType="DBFile" FileFieldName="ITEMMASTL1_ReadOnly" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RITEMMASTL1" OriginalName="RITEMMASTL1" Alias="L1RECFMT_ReadOnly" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="ITEMNUMBER" />
+            <Field Name="ITEMDESC" />
+            <Field Name="ITEMSHRTDS" />
+            <Field Name="ITEMCATGRY" />
+            <Field Name="ITEMPRICE" />
+            <Field Name="ITEMWEIGHT" />
+            <Field Name="ITEMUNIT" />
+            <Field Name="ITEMQTYAVL" />
+            <Field Name="ITEMQTYORD" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <DSUsage DSName="ITEMDS" DBName="SQL_LINEAR" FilePath="*LIBL/ITEMMASTER" IsMods="false" IsGlobalScope="true" Access="" IsStatic="false" UsesBuffer="true">
+        <Renames>
+          <Field Name="ITEMCATGRY" Alias="ITEMCATGRY" />
+          <Field Name="ITEMDESC" Alias="ITEMDESC" />
+          <Field Name="ITEMNUMBER" Alias="ITEMNUMBER" />
+          <Field Name="ITEMPRICE" Alias="ITEMPRICE" />
+          <Field Name="ITEMQTYAVL" Alias="ITEMQTYAVL" />
+          <Field Name="ITEMQTYORD" Alias="ITEMQTYORD" />
+          <Field Name="ITEMSHRTDS" Alias="ITEMSHRTDS" />
+          <Field Name="ITEMUNIT" Alias="ITEMUNIT" />
+          <Field Name="ITEMWEIGHT" Alias="ITEMWEIGHT" />
+        </Renames>
+      </DSUsage>
+    </Class>
+  </Namespace>
+</ClassSet>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassSet version="3">
+  <Namespace Name="ACME.SunFarm">
+    <Class Name="ORDPRINT">
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMERL1" FileType="DBFile" FileFieldName="CUSTOMERL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCUSTOMERL1" OriginalName="RCUSTOMERL1" Alias="RCUSTOMER" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ITEMMASTL1" FileType="DBFile" FileFieldName="ITEMMASTL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RITEMMASTL1" OriginalName="RITEMMASTL1" Alias="ITEM" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ORDERHDRL2" FileType="DBFile" FileFieldName="ORDERHDRL2" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RORDERHDRL2" OriginalName="RORDERHDRL2" Alias="RORDRHDR" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ORDERLINL2" FileType="DBFile" FileFieldName="ORDERLINL2" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RORDERLINL2" OriginalName="RORDERLINL2" Alias="RORDLINE" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/SHIPPING" FileType="DBFile" FileFieldName="SHIPPING" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RSHIPPING" OriginalName="RSHIPPING" Alias="SHIP" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+    </Class>
+  </Namespace>
+</ClassSet>

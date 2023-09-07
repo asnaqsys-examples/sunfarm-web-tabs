@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassSet version="3">
+  <Namespace Name="ACME.SunFarm">
+    <Class Name="CUSTPRMPT">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\CUSTPRMP" FilePath="~\Areas\SunFarmViews\Pages\CUSTPRMP" FileType="WorkStnFile" FileFieldName="CUSTPRMP" Access="" IsStatic="false" UsesUpdateWithFields="false">
+        <Record Name="MYWINDOW" OriginalName="MYWINDOW" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="WINTITLE" />
+          </DeclaredInClass>
+        </Record>
+        <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFL1" OriginalName="SFL1" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="DUMMY" OriginalName="DUMMY" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/SHIPPING" FileType="DBFile" FileFieldName="SHIPPING" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RSHIPPING" OriginalName="RSHIPPING" Alias="SHIP" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+    </Class>
+  </Namespace>
+</ClassSet>

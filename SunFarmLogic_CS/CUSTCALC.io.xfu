@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassSet version="3">
+  <Namespace Name="ACME.SunFarm">
+    <Class Name="CUSTCALC">
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMERL1" FileType="DBFile" FileFieldName="CUSTOMERL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCUSTOMERL1" OriginalName="RCUSTOMERL1" Alias="RCUSTOMER" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CSMASTERL1" FileType="DBFile" FileFieldName="CSMASTERL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCSMASTERL1" OriginalName="RCSMASTERL1" Alias="RCSMASTL1" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="CSCUSTNO" />
+            <Field Name="CSYEAR" />
+            <Field Name="CSTYPE" />
+            <Field Name="CSSALES01" />
+            <Field Name="CSSALES02" />
+            <Field Name="CSSALES03" />
+            <Field Name="CSSALES04" />
+            <Field Name="CSSALES05" />
+            <Field Name="CSSALES06" />
+            <Field Name="CSSALES07" />
+            <Field Name="CSSALES08" />
+            <Field Name="CSSALES09" />
+            <Field Name="CSSALES10" />
+            <Field Name="CSSALES11" />
+            <Field Name="CSSALES12" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <DSUsage DSName="CUSTSL" DBName="SQL_LINEAR" FilePath="*LIBL/CSMASTER" IsMods="false" IsGlobalScope="true" Access="" IsStatic="false" UsesBuffer="true" NoConstructor="true">
+        <Renames>
+          <Field Name="CSCUSTNO" Alias="CSCUSTNO" />
+          <Field Name="CSSALES01" Alias="CSSALES01" />
+          <Field Name="CSSALES02" Alias="CSSALES02" />
+          <Field Name="CSSALES03" Alias="CSSALES03" />
+          <Field Name="CSSALES04" Alias="CSSALES04" />
+          <Field Name="CSSALES05" Alias="CSSALES05" />
+          <Field Name="CSSALES06" Alias="CSSALES06" />
+          <Field Name="CSSALES07" Alias="CSSALES07" />
+          <Field Name="CSSALES08" Alias="CSSALES08" />
+          <Field Name="CSSALES09" Alias="CSSALES09" />
+          <Field Name="CSSALES10" Alias="CSSALES10" />
+          <Field Name="CSSALES11" Alias="CSSALES11" />
+          <Field Name="CSSALES12" Alias="CSSALES12" />
+          <Field Name="CSTYPE" Alias="CSTYPE" />
+          <Field Name="CSYEAR" Alias="CSYEAR" />
+        </Renames>
+      </DSUsage>
+    </Class>
+  </Namespace>
+</ClassSet>

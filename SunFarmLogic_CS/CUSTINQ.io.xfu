@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassSet version="3">
+  <Namespace Name="ACME.SunFarm">
+    <Class Name="CUSTINQ">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\CUSTDSPF" FilePath="~\Areas\SunFarmViews\Pages\CUSTDSPF" FileType="WorkStnFile" FileFieldName="CUSTDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
+        <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFL1" OriginalName="SFL1" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="CUSTREC" OriginalName="CUSTREC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SALESREC" OriginalName="SALESREC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="KEYS" OriginalName="KEYS" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSFC" OriginalName="MSGSFC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSF" OriginalName="MSGSF" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMERL2" FileType="DBFile" FileFieldName="CUSTOMERL2" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCUSTOMERL2" OriginalName="RCUSTOMERL2" Alias="L2RECFMT" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="CMCUSTNO" />
+            <Field Name="CMNAME" />
+            <Field Name="CMADDR1" />
+            <Field Name="CMADDR2" />
+            <Field Name="CMCITY" />
+            <Field Name="CMSTATE" />
+            <Field Name="CMPOSTCODE" />
+            <Field Name="CMACTIVE" />
+            <Field Name="CMFAX" />
+            <Field Name="CMPHONE" />
+            <Field Name="CMUSRFLGS" />
+            <Field Name="CMCONTACT" />
+            <Field Name="CMCONEMAL" />
+            <Field Name="CMYN01" />
+            <Field Name="CMYN02" />
+            <Field Name="CMYN03" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMERL1" FileType="DBFile" FileFieldName="CUSTOMERL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCUSTOMERL1" OriginalName="RCUSTOMERL1" Alias="L1RECFMT" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="CMCUSTNO" />
+            <Field Name="CMNAME" />
+            <Field Name="CMADDR1" />
+            <Field Name="CMADDR2" />
+            <Field Name="CMCITY" />
+            <Field Name="CMSTATE" />
+            <Field Name="CMPOSTCODE" />
+            <Field Name="CMACTIVE" />
+            <Field Name="CMFAX" />
+            <Field Name="CMPHONE" />
+            <Field Name="CMUSRFLGS" />
+            <Field Name="CMCONTACT" />
+            <Field Name="CMCONEMAL" />
+            <Field Name="CMYN01" />
+            <Field Name="CMYN02" />
+            <Field Name="CMYN03" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMERL1" FileType="DBFile" FileFieldName="CUSTOMERL1_ReadOnly" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCUSTOMERL1" OriginalName="RCUSTOMERL1" Alias="L1RECFMT_ReadOnly" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="CMCUSTNO" />
+            <Field Name="CMNAME" />
+            <Field Name="CMADDR1" />
+            <Field Name="CMADDR2" />
+            <Field Name="CMCITY" />
+            <Field Name="CMSTATE" />
+            <Field Name="CMPOSTCODE" />
+            <Field Name="CMACTIVE" />
+            <Field Name="CMFAX" />
+            <Field Name="CMPHONE" />
+            <Field Name="CMUSRFLGS" />
+            <Field Name="CMCONTACT" />
+            <Field Name="CMCONEMAL" />
+            <Field Name="CMYN01" />
+            <Field Name="CMYN02" />
+            <Field Name="CMYN03" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <DSUsage DSName="CUSTDS" DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMER" IsMods="false" IsGlobalScope="true" Access="" IsStatic="false" UsesBuffer="true">
+        <Renames>
+          <Field Name="CMACTIVE" Alias="CMACTIVE" />
+          <Field Name="CMADDR1" Alias="CMADDR1" />
+          <Field Name="CMADDR2" Alias="CMADDR2" />
+          <Field Name="CMCITY" Alias="CMCITY" />
+          <Field Name="CMCONEMAL" Alias="CMCONEMAL" />
+          <Field Name="CMCONTACT" Alias="CMCONTACT" />
+          <Field Name="CMCUSTNO" Alias="CMCUSTNO" />
+          <Field Name="CMFAX" Alias="CMFAX" />
+          <Field Name="CMNAME" Alias="CMNAME" />
+          <Field Name="CMPHONE" Alias="CMPHONE" />
+          <Field Name="CMPOSTCODE" Alias="CMPOSTCODE" />
+          <Field Name="CMSTATE" Alias="CMSTATE" />
+          <Field Name="CMUSRFLGS" Alias="CMUSRFLGS" />
+          <Field Name="CMYN01" Alias="CMYN01" />
+          <Field Name="CMYN02" Alias="CMYN02" />
+          <Field Name="CMYN03" Alias="CMYN03" />
+        </Renames>
+      </DSUsage>
+    </Class>
+  </Namespace>
+</ClassSet>

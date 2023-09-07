@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassSet version="3">
+  <Namespace Name="ACME.SunFarm">
+    <Class Name="ORDDTLINQ">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\ORDDTLINQD" FilePath="~\Areas\SunFarmViews\Pages\ORDDTLINQD" FileType="WorkStnFile" FileFieldName="ORDDTLINQD" Access="" IsStatic="false" UsesUpdateWithFields="false">
+        <Record Name="MYWINDOW" OriginalName="MYWINDOW" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="WINTITLE" />
+          </DeclaredInClass>
+        </Record>
+        <Record Name="ORDLINE" OriginalName="ORDLINE" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFL1" OriginalName="SFL1" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="KEYS" OriginalName="KEYS" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSFC" OriginalName="MSGSFC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="MSGSF" OriginalName="MSGSF" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMERL1" FileType="DBFile" FileFieldName="CUSTOMERL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCUSTOMERL1" OriginalName="RCUSTOMERL1" Alias="RCUSTOMER" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ITEMMASTL1" FileType="DBFile" FileFieldName="ITEMMASTL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RITEMMASTL1" OriginalName="RITEMMASTL1" Alias="ITEM" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ORDERHDRL2" FileType="DBFile" FileFieldName="ORDERHDRL2" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RORDERHDRL2" OriginalName="RORDERHDRL2" Alias="RORDRHDR" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ORDERHDRL2" FileType="DBFile" FileFieldName="ORDERHDRL2_ReadOnly" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RORDERHDRL2" OriginalName="RORDERHDRL2" Alias="RORDRHDR_ReadOnly" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/ORDERLINL2" FileType="DBFile" FileFieldName="ORDERLINL2" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RORDERLINL2" OriginalName="RORDERLINL2" Alias="RORDLINE" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+      </FileUsage>
+    </Class>
+  </Namespace>
+</ClassSet>

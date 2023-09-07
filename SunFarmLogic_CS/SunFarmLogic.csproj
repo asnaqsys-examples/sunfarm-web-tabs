@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>ACME.SunFarm</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+    <AssemblyName>ACME.SunFarmCustomers</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ASNA.QSys.DataGate.Client" Version="4.0.14" />
+    <PackageReference Include="ASNA.QSys.Runtime" Version="4.0.27" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="CUSTCALC.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CUSTCALC.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="CUSTDELIV.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CUSTDELIV.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="CUSTINQ.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CUSTINQ.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="CUSTPRMPT.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CUSTPRMPT.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="CUSTPRTS.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CUSTPRTS.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="ITEMINQ.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ITEMINQ.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="ORDDTLINQ.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ORDDTLINQ.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="ORDHINQ.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ORDHINQ.io.xfu</DependentUpon>
+    </Compile>
+    <Compile Update="ORDPRINT.io.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ORDPRINT.io.xfu</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="CUSTCALC.io.xfu">
+      <DependentUpon>CUSTCALC.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>CUSTCALC.io.cs</LastGenOutput>
+    </None>
+    <None Update="CUSTDELIV.io.xfu">
+      <DependentUpon>CUSTDELIV.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>CUSTDELIV.io.cs</LastGenOutput>
+    </None>
+    <None Update="CUSTINQ.io.xfu">
+      <DependentUpon>CUSTINQ.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>CUSTINQ.io.cs</LastGenOutput>
+    </None>
+    <None Update="CUSTPRMPT.io.xfu">
+      <DependentUpon>CUSTPRMPT.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>CUSTPRMPT.io.cs</LastGenOutput>
+    </None>
+    <None Update="CUSTPRTS.io.xfu">
+      <DependentUpon>CUSTPRTS.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>CUSTPRTS.io.cs</LastGenOutput>
+    </None>
+    <None Update="ITEMINQ.io.xfu">
+      <DependentUpon>ITEMINQ.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>ITEMINQ.io.cs</LastGenOutput>
+    </None>
+    <None Update="ORDDTLINQ.io.xfu">
+      <DependentUpon>ORDDTLINQ.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>ORDDTLINQ.io.cs</LastGenOutput>
+    </None>
+    <None Update="ORDHINQ.io.xfu">
+      <DependentUpon>ORDHINQ.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>ORDHINQ.io.cs</LastGenOutput>
+    </None>
+    <None Update="ORDPRINT.io.xfu">
+      <DependentUpon>ORDPRINT.cs</DependentUpon>
+      <Generator>AdgFileUsageGenerator</Generator>
+      <LastGenOutput>ORDPRINT.io.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;0168;0169;0414</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;0168;0169;0414</NoWarn>
+  </PropertyGroup>
+</Project>

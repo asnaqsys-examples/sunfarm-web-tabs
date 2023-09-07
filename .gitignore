@@ -399,3 +399,5 @@ FodyWeavers.xsd
 
 
 SunFarmSite/wwwroot/lib/asna-expo/*
+.asnacache
+.vscode
