@@ -26,8 +26,8 @@ Adjust the `AssemblyList` array includes both pathnames to the two implementatio
 {
     "MonaServer": {
         "AssemblyList": [
-        "C:/Projects/sunfarm-encore/SunFarmLogic_CS/bin/Debug/net6.0/ACME.SunFarmCustomers.dll",
-        "C:/Projects/sunfarm-encore/SunFarmLogic/bin/Debug/net6.0/ACME.SunFarmCustomers.dll"
+          "C:/Projects/sunfarm-ui-enhancements/SunFarmLogic_CS/bin/Debug/net6.0/ACME.SunFarmCustomers.dll",
+          "C:/Projects/sunfarm-ui-enhancements/SunFarmLogic/bin/Debug/net6.0/ACME.SunFarmCustomers.dll"
         ]
     }
 }

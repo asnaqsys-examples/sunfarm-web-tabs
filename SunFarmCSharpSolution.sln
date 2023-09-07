@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunFarmLogic", "SunFarmLogic_CS\SunFarmLogic.csproj", "{4B2BE70A-5DA2-4905-BC5E-CB9F20D25576}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunFarmSite", "SunFarmSite\SunFarmSite.csproj", "{05E97C94-F02C-48C9-916A-4D8A38462427}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B2BE70A-5DA2-4905-BC5E-CB9F20D25576} = {4B2BE70A-5DA2-4905-BC5E-CB9F20D25576}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
