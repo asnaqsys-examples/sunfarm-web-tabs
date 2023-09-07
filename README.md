@@ -4,14 +4,14 @@
 
 This repository contains two Visual Studio 2022 Solutions:
 
-| Solution name | Application Logic programming languaje |
+| Solution name | Application Logic programming language |
 | :- | :- |
 | SunFarmSolution.sln | ASNA Encore® RPG |
 | SunFarmCSharpSolution.sln | C# |
 
 Each Solution contains two projects:
 
-1. The Application Logic project (implemented in the programming logic indicated above).
+1. The Application Logic project (implemented in the programming language indicated above).
 2. The ASP.NET Core Webiste.
 
 >Note: The two implementations execute the same logic.
@@ -20,7 +20,7 @@ Once you have decided which solution to open, adjust the Website configuration t
 
 Locate the configuration file: `~\SunFarmSite\appsettings.json`
 
-Adjust the `AssemblyList` array includes both pathnames to the two implementation's .Net assemblies. The order in the list determines which to execute. Set the one you want to execute as the first item in the array.
+The `AssemblyList` array includes both pathnames to the two implementations (pointing to the .Net assemblies). The order in the list determines which to execute. Set the one you want to execute as the first item in the array.
 
 ```json
 {
