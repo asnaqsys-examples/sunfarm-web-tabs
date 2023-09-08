@@ -84,7 +84,10 @@ namespace ACME.SunFarm
                 pResult = "";
                 LoadSFL();
                 _IN[90] = '0';
-                SFLRRN = 12;
+                if (pCsrFld == "SFSTATE")
+                    SFLRRN = 12;
+                else
+                    SFLRRN = 1;
                 CUSTPRMP.Write("MYWINDOW", _IN.Array);
                 CUSTPRMP.ExFmt("SFLC", _IN.Array);
                 if ((bool)_IN[12])
