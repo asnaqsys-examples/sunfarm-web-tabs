@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SunFarmSite", "SunFarmSite\SunFarmSite.csproj", "{CB02F8E5-E3F0-44C1-8441-93FCDE9237E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunFarmSite", "SunFarmSite\SunFarmSite.csproj", "{CB02F8E5-E3F0-44C1-8441-93FCDE9237E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{808003D9-1304-40FE-9324-402176FFA7D0} = {808003D9-1304-40FE-9324-402176FFA7D0}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SunFarmLogic", "SunFarmLogic\SunFarmLogic.csproj", "{808003D9-1304-40FE-9324-402176FFA7D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SunFarmLogic", "SunFarmLogic\SunFarmLogic.csproj", "{808003D9-1304-40FE-9324-402176FFA7D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CB02F8E5-E3F0-44C1-8441-93FCDE9237E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -24,5 +24,8 @@ Global
 		{808003D9-1304-40FE-9324-402176FFA7D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{808003D9-1304-40FE-9324-402176FFA7D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{808003D9-1304-40FE-9324-402176FFA7D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

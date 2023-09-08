@@ -74,7 +74,11 @@ BegClass CUSTPRMPT Extends(Program) Access(*Public) +
         MoveL *Blanks pResult
         LoadSFL()
         *IN90 = "0"
-        SFLRRN = 12
+        If ( pCsrFld = "SFSTATE" )
+            SFLRRN = 12
+        Else
+            SFLRRN = 1
+            EndIf
         Write MYWINDOW
         ExFmt SFLC 
         If( *IN12)
