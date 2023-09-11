@@ -20,14 +20,14 @@ Once you have decided which solution to open, adjust the Website configuration t
 
 Locate the configuration file: `~\SunFarmSite\appsettings.json`
 
-The `AssemblyList` array includes both pathnames to the two implementations (pointing to the .Net assemblies). The order in the list determines which to execute. Set the one you want to execute as the first item in the array.
+The `AssemblyList` array includes both pathnames to the two implementations (pointing to the application logic .Net assemblies). The order in the list determines which to execute. Set the one you want to execute as the first item in the array.
 
 ```json
 {
     "MonaServer": {
         "AssemblyList": [
-          "C:/Projects/sunfarm-ui-enhancements/SunFarmLogic_CS/bin/Debug/net6.0/ACME.SunFarmCustomers.dll",
-          "C:/Projects/sunfarm-ui-enhancements/SunFarmLogic/bin/Debug/net6.0/ACME.SunFarmCustomers.dll"
+          "../SunFarmLogic_CS/**/ACME.SunFarmCustomers.dll",
+          "../SunFarmLogic/**/ACME.SunFarmCustomers.dll"
         ]
     }
 }
