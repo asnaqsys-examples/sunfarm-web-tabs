@@ -9,8 +9,7 @@
     <AssemblyName>ACME.SunFarmCustomers</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ASNA.QSys.DataGate.Client" Version="4.0.14" />
-    <PackageReference Include="ASNA.QSys.Runtime" Version="4.0.27" />
+    <PackageReference Include="ASNA.QSys.Runtime" Version="4.0.30" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="CUSTCALC.io.cs">

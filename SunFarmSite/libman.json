@@ -3,7 +3,7 @@
   "libraries": [
     {
       "provider": "jsdelivr",
-      "library": "asnaqsys/asna-qsys-expo-web-content@4.0.8",
+      "library": "asnaqsys/asna-qsys-expo-web-content@4.0.9-beta",
       "destination": "wwwroot/lib/asna-expo",
       "files": [
         "**/*",
