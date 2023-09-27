@@ -15,10 +15,8 @@
         <DdsFunctionKeys Location="HorizontalBottom" />
 
         <main role="main" class="display-element-uninitialized">
-            @{
-                int SFLC_SubfilePage = 14;
-            }
-            <DdsSubfileControl For="SFLC" StretchConstantText=false KeyNames="F9 'Spooled Files';" SubfilePage="@SFLC_SubfilePage" CueCurrentRecord=true ClickSetsCurrentRecord=true>
+
+            <DdsSubfileControl For="SFLC" StretchConstantText=false KeyNames="F9 'Spooled Files';" SubfilePage="@CUSTDSPF.CustomerSufilePageSize" CueCurrentRecord=true ClickSetsCurrentRecord=true>
                 <span class="page-title">SunFarm Customer Inquiry</span>
 
                 <div Row="2">
@@ -32,7 +30,7 @@
                     <DdsConstant Col="14+1" Text="Customer Name" Color="DarkBlue" Underline="*True" />
                     <DdsConstant Col="55+1" Text="City / State / Zip" Color="DarkBlue" Underline="*True" />
                 </div>
-                <div Row="6" RowSpan="@SFLC_SubfilePage">
+                <div Row="5" RowSpan="@CUSTDSPF.CustomerSufilePageSize">
                     @for (int rrn=0; rrn < Model.SFLC.SFL1.Count; rrn++)
                     {
                         int row = 8 + rrn;

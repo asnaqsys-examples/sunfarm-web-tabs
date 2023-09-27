@@ -7,9 +7,11 @@
     <Nullable>disable</Nullable>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <AssemblyName>ACME.SunFarmCustomers</AssemblyName>
+    <UseEncoreSdkRuntimeReferences>False</UseEncoreSdkRuntimeReferences>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ASNA.QSys.Runtime" Version="4.0.30" />
+    <PackageReference Include="ASNA.QSys.Runtime" Version="4.0.*" />
+    <PackageReference Include="ASNA.QSys.DataGate" Version="4.0.*" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="CUSTCALC.io.cs">
@@ -111,4 +113,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn>1701;1702;0168;0169;0414</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ASNA.QSys.DataGate.Client" Version="4.0.17" />
+    <PackageReference Include="ASNA.QSys.Runtime" Version="4.0.30" />
+  </ItemGroup>
 </Project>

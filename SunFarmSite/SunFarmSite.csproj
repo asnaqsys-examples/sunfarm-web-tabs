@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SunFarmLogic_CS\SunFarmLogic.csproj" />
+    <ProjectReference Include="..\SunFarmLogic\SunFarmLogic.csproj" />
   </ItemGroup>
 
 </Project>

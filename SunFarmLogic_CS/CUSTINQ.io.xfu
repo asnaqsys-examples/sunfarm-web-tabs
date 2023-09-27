@@ -2,7 +2,7 @@
 <ClassSet version="3">
   <Namespace Name="ACME.SunFarm">
     <Class Name="CUSTINQ">
-      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\CUSTDSPF" FilePath="~\Areas\SunFarmViews\Pages\CUSTDSPF" FileType="WorkStnFile" FileFieldName="CUSTDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-ui-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\CUSTDSPF" FilePath="~\Areas\SunFarmViews\Pages\CUSTDSPF" FileType="WorkStnFile" FileFieldName="CUSTDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
         <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
           <DeclaredInClass />
         </Record>

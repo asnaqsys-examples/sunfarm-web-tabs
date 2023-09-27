@@ -11,6 +11,8 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
    Attributes(CallerActivationGroup(), + 
              System.ComponentModel.Description("Customer Inquiry and Maintenance")) + 
    UsesCycle(*Yes)
+    
+     DclConst CustomerSufilePageSize 14+5
 
     //      ********************************************************************
     //       JB   8/27/2004   Added F4 (Prompt) options.
@@ -539,7 +541,7 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
     //----------------------------------------------------------
 
         DoWhile ( *Not *IN77  /* EOF or full s/f. */ +
-            *And ( sflrrn < 14 ) )
+            *And ( sflrrn < CustomerSufilePageSize ) )
 
             SFCUSTNO = CMCUSTNO
             SFNAME1 = CMNAME
@@ -586,7 +588,7 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
         ReadP L2RECFMT Bof(*IN76)
 
         DoWhile ( *Not *IN76  /* EOF or full s/f. */ +
-            *And ( X < 14 ) )
+            *And ( X < CustomerSufilePageSize ) )
             X = X + 1
             ReadP L2RECFMT Bof(*IN76)
         EndDo
