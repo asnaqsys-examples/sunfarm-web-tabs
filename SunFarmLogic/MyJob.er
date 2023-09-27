@@ -7,24 +7,23 @@ DclNamespace ACME.SunFarmCustomers_Job
 
 BegClass MyJob Extends(InteractiveJob)  Access(*Public)
     DclDB Name(MyDatabase) DBName("SQL_LINEAR") Access(*Public) 
-    // DclDB Name(MyPrinterDB) DBName("Local") Access(*Public)
+    DclDB Name(MyPrinterDB) DBName("SQL_LINEAR") Access(*Public)
     
     
     BegFunc getDatabase Type(Database) Access(*Protected) Modifier(*Overrides)
         LeaveSR MyDatabase
     EndFunc
     
-//   BegFunc getPrinterDB Type(Database) Access(*Protected) Modifier(*Overrides)
-//   LeaveSR MyPrinterDB
-//   EndFunc
-        
+    BegFunc getPrinterDB Type(Database) Access(*Protected) Modifier(*Overrides)
+        LeaveSR MyPrinterDB
+    EndFunc
 
     BegSr Dispose Access(*Public) Modifier(*Overrides)
         DclSrParm disposing Type(*Boolean)
         If disposing
             
             Disconnect  MyDatabase
-            // Disconnect  MyPrinterDB
+            Disconnect  MyPrinterDB
             
         EndIf
         *Base.Dispose(disposing)
@@ -43,12 +42,9 @@ BegClass MyJob Extends(InteractiveJob)  Access(*Public)
 
     BegSr  ExecuteStartupProgram Access(*Protected) Modifier(*Overrides)
         Connect     MyDatabase
-        
-        // Connect     MyPrinterDB
-        
+        Connect     MyPrinterDB
         
         CallD       "ACME.SunFarm.RUNCI"
-                
     EndSr
     
     

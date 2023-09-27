@@ -2,7 +2,7 @@
 <ClassSet version="3">
   <Namespace Name="ACME.SunFarm">
     <Class Name="ORDHINQ">
-      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\ORDHDSPF" FilePath="~\Areas\SunFarmViews\Pages\ORDHDSPF" FileType="WorkStnFile" FileFieldName="ORDHDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-ui-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\ORDHDSPF" FilePath="~\Areas\SunFarmViews\Pages\ORDHDSPF" FileType="WorkStnFile" FileFieldName="ORDHDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
         <Record Name="MYWINDOW" OriginalName="MYWINDOW" UsesClearFormat="false">
           <DeclaredInClass />
         </Record>

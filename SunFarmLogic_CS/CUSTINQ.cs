@@ -1,4 +1,4 @@
-﻿// Translated from Encore to C# on 9/7/2023 at 9:29:34 AM by ASNA Encore Translator® version 4.0.17.0
+﻿// Translated from Encore to C# on 9/27/2023 at 4:15:07 PM by ASNA Encore Translator® version 4.0.18.0
 // ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
 // Migrated source location: library ERCAP, file QRPGSRC, member CUSTINQ
 
@@ -17,6 +17,8 @@ namespace ACME.SunFarm
     public partial class CUSTINQ : Program
     {
         protected dynamic _DynamicCaller;
+
+        const decimal CustomerSufilePageSize = 14 + 5;
 
         //      ********************************************************************
         //       JB   8/27/2004   Added F4 (Prompt) options.
@@ -604,7 +606,7 @@ namespace ACME.SunFarm
 
             //----------------------------------------------------------
 
-            while (!(bool)_IN[77] && (sflrrn < 14))
+            while (!(bool)_IN[77] && (sflrrn < CustomerSufilePageSize))
             {
 
                 /* EOF or full s/f. */
@@ -658,7 +660,7 @@ namespace ACME.SunFarm
             CUSTOMERL2.Chain(true, CMNAME, CMCUSTNO);
             _IN[76] = CUSTOMERL2.ReadPrevious(true) ? '0' : '1';
 
-            while (!(bool)_IN[76] && (X < 14))
+            while (!(bool)_IN[76] && (X < CustomerSufilePageSize))
             {
                 /* EOF or full s/f. */
                 X = X + 1;
@@ -807,6 +809,10 @@ namespace ACME.SunFarm
             __inLR = RunProgram<CUSTINQ>(_caller, (CUSTINQ _instance) => _instance.__ENTRY());
         }
 #endregion
+
+        static CUSTINQ()
+        {
+        }
 
         void _instanceInit()
         {

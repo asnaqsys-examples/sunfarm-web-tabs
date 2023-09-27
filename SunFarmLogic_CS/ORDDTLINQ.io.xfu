@@ -2,7 +2,7 @@
 <ClassSet version="3">
   <Namespace Name="ACME.SunFarm">
     <Class Name="ORDDTLINQ">
-      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-encore\SunFarmSite\Areas\SunFarmViews\Pages\ORDDTLINQD" FilePath="~\Areas\SunFarmViews\Pages\ORDDTLINQD" FileType="WorkStnFile" FileFieldName="ORDDTLINQD" Access="" IsStatic="false" UsesUpdateWithFields="false">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-ui-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\ORDDTLINQD" FilePath="~\Areas\SunFarmViews\Pages\ORDDTLINQD" FileType="WorkStnFile" FileFieldName="ORDDTLINQD" Access="" IsStatic="false" UsesUpdateWithFields="false">
         <Record Name="MYWINDOW" OriginalName="MYWINDOW" UsesClearFormat="false">
           <DeclaredInClass>
             <Field Name="WINTITLE" />
