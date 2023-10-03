@@ -108,7 +108,8 @@
                     <DdsCheckboxField Col="27" Text="Send Confirmation."  For="CUSTREC.SFYN01" VirtualRowCol="18,27" tabIndex=@pageTabIndex++ />
                 </div>
             </DdsRecord> @* CUSTREC *@
-            <DdsRecord For="SALESREC" StretchConstantText=false KeyNames="F12 'Cancel';" ExcludeEmptyRows="6-20">
+
+            <DdsSubfileControl For="SALESREC" StretchConstantText=false KeyNames="F12 'Cancel';" ExcludeEmptyRows="6-24">
                 <span class="page-title">SunFarm Customer Sales/Returns</span>
 
                 <div Row="1">
@@ -126,12 +127,27 @@
                     <DdsCharField Col="15" For="SALESREC.SFNAME" Color="DarkBlue" />
                 </div>
                 <div Row="5">
-
+                    <DdsConstant Col="1" Text="" />
                 </div>
+                @*
+                <div Row="6" RowSpan=12>
+                    @for (int rrn = 0; rrn < Model.SALESREC.SFL_SalesReturns.Count; rrn++)
+                    {
+                        int row = 8 + rrn;
+                        <DdsSubfileRecord RecordNumber="rrn" For="SALESREC.SFL_SalesReturns">
+                            <DdsDecField Col="3" For="SALESREC.SFL_SalesReturns[rrn].Year" />
+                            <DdsCharField Col="8" For="SALESREC.SFL_SalesReturns[rrn].Month" />
+                            <DdsDecField Col="14" For="SALESREC.SFL_SalesReturns[rrn].Sales" />
+                            <DdsDecField Col="25" For="SALESREC.SFL_SalesReturns[rrn].Returns" />
+                        </DdsSubfileRecord>
+                    }
+                </div>
+                *@
                 <div id="sales-chart-container">
                     <div id="sales-chart">Sales Chart</div>
-                </div>
-            </DdsRecord> @* SALESREC *@
+                </div> 
+            </DdsSubfileControl> @* SALESREC *@
+
             <DdsRecord For="KEYS">
             </DdsRecord> @* KEYS *@
             @{
@@ -157,37 +173,8 @@
 
 <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
 <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="~/js/Chart.js"></script>
 <script>
-    const CHART_ID = 'sales-chart';
-    const chartEl = document.getElementById('sales-chart');
-    if (chartEl) {
-        const chart = am4core.create(CHART_ID, am4charts.XYChart);
-        const xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-        const yAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
-        xAxis.dataFields.category = 'category';
-
-        const series = chart.series.push(new am4charts.ColumnSeries())
-        series.dataFields.valueY = 'amount';
-        series.dataFields.categoryX = 'category';
-        series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
-
-        series.columns.template.adapter.add("fill", (fill, target) => {
-            if (target.dataItem.index == 0) {
-                return 'blue';
-            }
-            return 'red';
-        });
-
-        chart.data = [
-            {
-                category: 'Total Sales',
-                amount: @Model.SALESREC.SFSALES
-            },
-            {
-                category: 'Total Returns',
-                amount: @Model.SALESREC.SFRETURNS
-            }
-        ];
-   }
+    LoadChart(@Html.Raw(@Model.SALESREC.SalesReturnsChartData));
 </script>

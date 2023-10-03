@@ -12,42 +12,20 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
              System.ComponentModel.Description("Customer Inquiry and Maintenance")) + 
    UsesCycle(*Yes)
     
-     DclConst CustomerSufilePageSize 14+5
+     DclConst CustomerSufilePageSize    19
+     DclConst SaleEvent                 1
+     DclConst ReturnEvent               2
 
-    //      ********************************************************************
-    //       JB   8/27/2004   Added F4 (Prompt) options.
-    //       JB   8/30/2004   Added 'submit job' option.
-    //       JB   9/01/2004   Fixed record locking problem.
-    //       JB   5/19/2005   Added colouring to the name/addr subfile.
-    //                        Added cursor postioning to the detail format.
-    //                        Added option to print sales online or in batch.
-    //                        Changed the prompt display to a window.
-    //       JB   5/23/2005   Added /COPY for reading CUSTOMERL1.
-    //                        Added customer name to the sales summary format.
-    //                        Added renaming of CUSTOMERL1 record format.
-    //       JB   5/24/2005   Simplified the LoadSfl subroutine.
-    //       JB   5/31/2005   Added PageDown/RollUp processing.
-    //       JB   6/01/2005   Renamed CMMASTER* files to CUSTOMER*.
-    //       JB  14/02/2006   Fixed bug in page up on the customer subfile -
-    //                        a customer record was skipped every time.
-    //      ********************************************************************
-    //       INDICATORS:
-    //         03     F3 pressed
-    //         09     F9 pressed
-    //         40-44  Cursor positioning
-    //         50     PageUp pressed
-    //         51     PageDown pressed
-    //         66     EOF reading on the subfile
-    //         76     BOF reading CUSTOMERL2
-    //         77     EOF reading CUSTMOMER2
-    //         88     LR seton in a called program
-    //         99     General error indicator
-    //      ********************************************************************
-    DclWorkStnFile CUSTDSPF DspFile("~\Areas\SunFarmViews\Pages\CUSTDSPF") Subfile( SFL1,sflrrn )
-    //                                    HANDLER('ASNAWINGS')
+    DclWorkStnFile CUSTDSPF DspFile("~\Areas\SunFarmViews\Pages\CUSTDSPF") Subfile( SFL1, sflrrn, SFL_SALESRETURNS, SalesSflrrn )
+    
     DclDiskFile CUSTOMERL2  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL2") ImpOpen(*No) RnmFmt( L2RECFMT )
     DclDiskFile CUSTOMERL1  Type(*Update) AddRec(*Yes) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( L1RECFMT )
     DclDiskFile CUSTOMERL1_ReadOnly  Type(*Input) AddRec(*Yes) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CUSTOMERL1") ImpOpen(*No) RnmFmt( L1RECFMT_ReadOnly )
+    DclDiskFile CSMASTERL1  Type(*Input) Org(*Indexed) DB(MyJob.MyDatabase) File("*LIBL/CSMASTERL1") ImpOpen(*No) RnmFmt( RCSMASTL1 )
+    
+    DclDs CUSTSL ExtDesc(*Yes) DbDesc(MyJob.MyDatabase) FileDesc("*LIBL/CSMASTER")
+        DclDsFld YearlySales          Type( *Packed  ) Len( 11 ,2 ) Dim( 12 ) StartAt(11)
+    
     //********************************************************************
     DclDs 
         DclDsFld #pNbrs            Type( *Zoned   )    Len( 3,0 )
@@ -57,8 +35,8 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
     DclArray pTypes            Type( *Char    ) Len( 1   ) Dim( 20 )
     DclFld MID               Type( *Char    )    Len( 7   )
     DclFld MTX               Type( *Char    )    Len( 30  )
-    DclFld Sales             Type( *Packed  )    Len( 13,2 )
-    DclFld Returns           Type( *Packed  )    Len( 13,2 )
+    // DclFld Tot_Sales         Type( *Packed  )    Len( 13,2 )
+    // DclFld Tot_Returns       Type( *Packed  )    Len( 13,2 )
     DclFld LockRec           Type( *Char    )    Len( 1   )
     DclFld CmCust#           Type( *Packed  )    Len( 9,0 )
     DclFld SalesCh           Type( *Char    )    Len( 13  )
@@ -111,6 +89,8 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
     DclFld savrrn            Type( *Packed  )    Len( 4,0 )
     DclFld sflrrn            Type( *Packed  )    Len( 4,0 )
     DclFld TEMPNO            Type( *Packed  )    Len( 9,0 )
+
+    DclFld SalesSflrrn       Type( *Packed  )    Len( 4,0 )
  
     // PLIST(s) relocated by Monarch
     DclPList #PLMSG
@@ -133,6 +113,8 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
         Open CUSTOMERL1 DB(CurrentJob.Database)
         Open CUSTOMERL1_ReadOnly DB(CurrentJob.Database)
         Open CUSTOMERL2 DB(CurrentJob.Database)
+        Open CSMASTERL1 DB(CurrentJob.Database)
+
     EndConstructor
  
     BegSr Dispose  Access( *Public ) Modifier(*Overrides)
@@ -496,8 +478,8 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
         CustChk()
 
         CmCust# = CMCUSTNO
-        Sales = 0
-        Returns = 0
+        // Tot_Sales = 0
+        // Tot_Returns = 0
         Move CMCUSTNO CmCust#CH
         Move *Zeros SalesCh
         Move *Zeros ReturnsCh
@@ -512,10 +494,14 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
 
         DoUntil ( *IN03 +
             *Or ( *IN12) )
+
+            LoadSalesAndReturns() // TEST !!!
+
             ExFmt SALESREC 
         EndDo
 
         SetOff *IN03 // Reset the exit ind.
+        
 
     EndSr
 
@@ -646,7 +632,125 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
     // Message handling parm list
         // PLIST "#PLMSG" moved by Monarch to global scope.
     EndSr
+    
+    BegSr LoadSalesAndReturns
 
+        DclArray LastRecordedYearSales Type( *Packed  ) Len( 11 ,2 ) Dim(12)
+        DclArray LastRecordedYearReturns Type( *Packed  ) Len( 11 ,2 ) Dim(12)
+        DclFld LastRecordedYear Like(CSYEAR)
+        
+        
+        CustChk()
+        If *IN80 
+           Return 
+        EndIF
+            
+        *IN90 = "1" // Clear the subfile.
+        Write SALESREC
+
+        *IN90 = "0" // Display records.
+        SalesSflrrn = 0
+        
+        LastRecordedYear = 0
+        
+        SetLL RCSMASTL1 Key(CMCUSTNO)
+        ReadE From(RCSMASTL1) Key(CMCUSTNO) Eof(*IN03)
+        
+        DoWhile ( *Not *IN03)
+            
+            If CSYEAR *GE LastRecordedYear
+                LastRecordedYear = CSYEAR
+                
+                If CSTYPE = SaleEvent 
+                    LastRecordedYearSales = YearlySales
+                Else
+                    LastRecordedYearReturns = YearlySales
+                EndIf
+            EndIf
+            
+            ReadE From(RCSMASTL1) Key(CMCUSTNO) Eof(*IN03) // Read Next
+        EndDo
+
+        If LastRecordedYear *GT 0 
+            YEAR = LastRecordedYear
+            MONTH = "Jan"
+            SALES = LastRecordedYearSales[0]
+            RETURNS = LastRecordedYearReturns[0]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Feb"
+            SALES = LastRecordedYearSales[1]
+            RETURNS = LastRecordedYearReturns[1]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+            
+            MONTH = "Mar"
+            SALES = LastRecordedYearSales[2]
+            RETURNS = LastRecordedYearReturns[2]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+            
+            MONTH = "Apr"
+            SALES = LastRecordedYearSales[3]
+            RETURNS = LastRecordedYearReturns[3]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "May"
+            SALES = LastRecordedYearSales[4]
+            RETURNS = LastRecordedYearReturns[4]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Jun"
+            SALES = LastRecordedYearSales[5]
+            RETURNS = LastRecordedYearReturns[5]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Jul"
+            SALES = LastRecordedYearSales[6]
+            RETURNS = LastRecordedYearReturns[6]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Aug"
+            SALES = LastRecordedYearSales[7]
+            RETURNS = LastRecordedYearReturns[7]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Sep"
+            SALES = LastRecordedYearSales[8]
+            RETURNS = LastRecordedYearReturns[8]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Oct"
+            SALES = LastRecordedYearSales[9]
+            RETURNS = LastRecordedYearReturns[9]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Nov"
+            SALES = LastRecordedYearSales[10]
+            RETURNS = LastRecordedYearReturns[10]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+
+            MONTH = "Dec"
+            SALES = LastRecordedYearSales[11]
+            RETURNS = LastRecordedYearReturns[11]
+            SalesSflrrn = SalesSflrrn + 1
+            Write SFL_SALESRETURNS
+        EndIf
+        
+        SetOff IndList( *IN76, *IN90 ) // Display records.
+        Write SALESREC
+
+    EndSr 
+        
     //********************************************************************
     //   CHECK THE CUSTOMER NUMBER
     //********************************************************************

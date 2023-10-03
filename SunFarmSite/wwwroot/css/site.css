@@ -45,8 +45,8 @@ for details on configuring this project to bundle and minify static web assets. 
 
 #sales-chart-container div {
     margin: 0 auto;
-    width: 50%;
-    height: 20rem;
+    width: 90%;
+    height: 25rem;
 }
 
 #sales-chart {

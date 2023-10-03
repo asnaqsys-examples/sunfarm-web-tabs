@@ -6,9 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
-        <DisplayFileRoot>C:\Projects\sunfarm-ui-enhancements\SunFarmSite</DisplayFileRoot>
+        <DisplayFileRoot>$(MSBuildProjectDirectory)\..\SunFarmSite</DisplayFileRoot>
         <AssemblyName>ACME.SunFarmCustomers</AssemblyName>
-        <UseEncoreSdkRuntimeReferences>False</UseEncoreSdkRuntimeReferences>
+        <UseEncoreSdkRuntimeReferences>True</UseEncoreSdkRuntimeReferences>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -18,10 +18,5 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <NoWarn>1701;1702;0168;0169;0414</NoWarn>
     </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="ASNA.QSys.DataGate.Client" Version="4.0.17" />
-      <PackageReference Include="ASNA.QSys.Runtime" Version="4.0.30" />
-    </ItemGroup>
     
 </Project>

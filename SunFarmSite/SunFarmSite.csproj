@@ -12,12 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ASNA.QSys.Expo" Version="4.0.30" />
-    <PackageReference Include="ASNA.QSys.MonaServer" Version="4.0.21" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SunFarmLogic\SunFarmLogic.csproj" />
+    <PackageReference Include="ASNA.QSys.Expo" Version="4.0.*" />
+    <PackageReference Include="ASNA.QSys.MonaServer" Version="4.0.*" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
   </ItemGroup>
 
 </Project>

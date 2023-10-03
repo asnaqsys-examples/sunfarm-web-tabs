@@ -25,6 +25,15 @@ namespace ACME.SunFarm.SunFarmViews
         public KEYS_Model KEYS { get; set; }
         public MSGSFC_Model MSGSFC { get; set; }
 
+        protected override void OnCopyDspFileToBrowser()
+        {
+            base.OnCopyDspFileToBrowser();
+
+            if (SALESREC.IsActive && SALESREC.SFL_SalesReturns.Count > 0)
+                SALESREC.PopulateChartData();
+        }
+
+
         public CUSTDSPF()
         {
             SFLC = new SFLC_Model();
@@ -70,7 +79,6 @@ namespace ACME.SunFarm.SunFarmViews
                 public string SFCSZ { get; private set; } // CITY-STATE-ZIP
 
             }
-
         }
 
         [
@@ -151,12 +159,18 @@ namespace ACME.SunFarm.SunFarmViews
         }
 
         [
-            Record(FunctionKeys = "F12 12",
+            SubfileControl(ClearRecords: "90",
+                DisplayFields = "!90",
+                DisplayRecords = "!90",
+                Size = 12,
+                IsExpandable = false,
                 EraseFormats = "CUSTREC , KEYS , SFLC"
             )
         ]
-        public class SALESREC_Model : RecordModel
+        public class SALESREC_Model : SubfileControlModel
         {
+            public List<SFL_SalesReturns_Model> SFL_SalesReturns { get; set; } = new List<SFL_SalesReturns_Model>();
+
             [Char(10)]
             public string SCPGM { get; private set; }
 
@@ -172,10 +186,82 @@ namespace ACME.SunFarm.SunFarmViews
             [Dec(13, 2)]
             public decimal SFRETURNS { get; private set; }
 
+            private decimal ChartYear { get; set; }
+            private decimal[] ChartSales { get; set; } = new decimal[12];
+            private decimal[] ChartRetuns { get; set; } = new decimal[12];
+
+            public string SalesReturnsChartData { get; private set; } = "{}";
+
+            public class SFL_SalesReturns_Model: SubfileRecordModel
+            {
+                [Dec(4, 0)]
+                public decimal YEAR { get; private set; }
+
+                [Char(3)]
+                public string MONTH { get; set; }
+
+                [Dec(11, 2)]
+                public decimal SALES { get; private set; }
+
+                [Dec(11, 2)]
+                public decimal RETURNS { get; private set; }
+            }
+
+            public void PopulateChartData()
+            {
+                if (SFL_SalesReturns.Count == 0)
+                    return;
+
+                ChartYear = SFL_SalesReturns[0].YEAR;
+
+                for( int i =0; i < SFL_SalesReturns.Count; i++ )
+                {
+                    ChartSales[i] = SFL_SalesReturns[i].SALES;
+                    ChartRetuns[i] = Math.Abs( SFL_SalesReturns[i].RETURNS );
+                }
+
+                SalesReturnsChartData = "{";
+
+                SalesReturnsChartData += $"year: {ChartYear},";
+                SalesReturnsChartData += $"sales: [{CommaSeparatedSales()}],";
+                SalesReturnsChartData += $"returns: [{CommaSeparatedReturns()}]";
+
+                SalesReturnsChartData += "}";
+            }
+
+            private string CommaSeparatedSales()
+            {
+                string result = string.Empty;
+
+                foreach (var sale in ChartSales)
+                {
+                    result += $"{sale},";
+                }
+
+                result = result.TrimEnd(',');
+
+                return result;
+            }
+
+            private string CommaSeparatedReturns()
+            {
+                string result = string.Empty;
+
+                foreach (var ret in ChartRetuns)
+                {
+                    result += $"{ret},";
+                }
+
+                result = result.TrimEnd(',');
+
+                return result;
+            }
+
+
         }
 
         [
-            Record(EraseFormats = "CUSTREC , SALESREC")
+            Record(EraseFormats = "CUSTREC, SALESREC")
         ]
         public class KEYS_Model : RecordModel
         {
