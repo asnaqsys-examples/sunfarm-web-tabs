@@ -186,10 +186,6 @@ namespace ACME.SunFarm.SunFarmViews
             [Dec(13, 2)]
             public decimal SFRETURNS { get; private set; }
 
-            private decimal ChartYear { get; set; }
-            private decimal[] ChartSales { get; set; } = new decimal[12];
-            private decimal[] ChartRetuns { get; set; } = new decimal[12];
-
             public string SalesReturnsChartData { get; private set; } = "{}";
 
             public class SFL_SalesReturns_Model: SubfileRecordModel
@@ -209,52 +205,37 @@ namespace ACME.SunFarm.SunFarmViews
                 if (SFL_SalesReturns.Count == 0)
                     return;
 
-                ChartYear = SFL_SalesReturns[0].YEAR;
+                decimal[] chartSales = new decimal[12];
+                decimal[] chartRetuns = new decimal[12];
 
                 for( int i =0; i < SFL_SalesReturns.Count; i++ )
                 {
-                    ChartSales[i] = SFL_SalesReturns[i].SALES;
-                    ChartRetuns[i] = Math.Abs( SFL_SalesReturns[i].RETURNS );
+                    chartSales[i] = Math.Abs(SFL_SalesReturns[i].SALES);
+                    chartRetuns[i] = Math.Abs( SFL_SalesReturns[i].RETURNS );
                 }
 
                 SalesReturnsChartData = "{";
 
-                SalesReturnsChartData += $"year: {ChartYear},";
-                SalesReturnsChartData += $"sales: [{CommaSeparatedSales()}],";
-                SalesReturnsChartData += $"returns: [{CommaSeparatedReturns()}]";
+                SalesReturnsChartData += $"year: {SFL_SalesReturns[0].YEAR},";
+                SalesReturnsChartData += $"sales: [{ToCommaSeparatedValueStr(chartSales)}],";
+                SalesReturnsChartData += $"returns: [{ToCommaSeparatedValueStr(chartRetuns)}]";
 
                 SalesReturnsChartData += "}";
             }
 
-            private string CommaSeparatedSales()
+            private string ToCommaSeparatedValueStr(decimal[] data)
             {
                 string result = string.Empty;
 
-                foreach (var sale in ChartSales)
+                foreach (var val in data)
                 {
-                    result += $"{sale},";
+                    result += $"{val},";
                 }
 
                 result = result.TrimEnd(',');
 
                 return result;
             }
-
-            private string CommaSeparatedReturns()
-            {
-                string result = string.Empty;
-
-                foreach (var ret in ChartRetuns)
-                {
-                    result += $"{ret},";
-                }
-
-                result = result.TrimEnd(',');
-
-                return result;
-            }
-
-
         }
 
         [
