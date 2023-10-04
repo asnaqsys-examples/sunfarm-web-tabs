@@ -197,9 +197,6 @@ namespace ACME.SunFarm.SunFarmViews
                 [Dec(4, 0)]
                 public decimal YEAR { get; private set; }
 
-                [Char(3)]
-                public string MONTH { get; set; }
-
                 [Dec(11, 2)]
                 public decimal SALES { get; private set; }
 
@@ -207,7 +204,7 @@ namespace ACME.SunFarm.SunFarmViews
                 public decimal RETURNS { get; private set; }
             }
 
-            public void PopulateChartData()
+            internal void PopulateChartData()
             {
                 if (SFL_SalesReturns.Count == 0)
                     return;
