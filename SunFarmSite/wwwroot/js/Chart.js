@@ -1,4 +1,6 @@
 ﻿const LoadChart = (appData) => {
+    if (Object.keys(appData).length === 0) { return; } // Make sure object is NOT empty
+
     const CHART_ID = 'sales-chart';
     const chartEl = document.getElementById('sales-chart');
     if (chartEl) {
