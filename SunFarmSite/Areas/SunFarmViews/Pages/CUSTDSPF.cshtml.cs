@@ -206,19 +206,19 @@ namespace ACME.SunFarm.SunFarmViews
                     return;
 
                 decimal[] chartSales = new decimal[12];
-                decimal[] chartRetuns = new decimal[12];
+                decimal[] chartReturns = new decimal[12];
 
                 for( int i =0; i < SFL_SalesReturns.Count; i++ )
                 {
-                    chartSales[i] = Math.Abs(SFL_SalesReturns[i].SALES);
-                    chartRetuns[i] = Math.Abs( SFL_SalesReturns[i].RETURNS );
+                    chartSales[i] = SFL_SalesReturns[i].SALES;
+                    chartReturns[i] = Math.Abs( SFL_SalesReturns[i].RETURNS ); // Easier to view positive values.
                 }
 
                 SalesReturnsChartData = "{";
 
                 SalesReturnsChartData += $"year: {SFL_SalesReturns[0].YEAR},";
                 SalesReturnsChartData += $"sales: [{ToCommaSeparatedValueStr(chartSales)}],";
-                SalesReturnsChartData += $"returns: [{ToCommaSeparatedValueStr(chartRetuns)}]";
+                SalesReturnsChartData += $"returns: [{ToCommaSeparatedValueStr(chartReturns)}]";
 
                 SalesReturnsChartData += "}";
             }
