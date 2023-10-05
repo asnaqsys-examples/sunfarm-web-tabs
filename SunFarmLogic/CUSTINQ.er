@@ -624,8 +624,8 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
     
     BegSr LoadSalesAndReturns
 
-        DclArray LastRecordedYearSales Like(CSSALES01) Dim(12)
-        DclArray LastRecordedYearReturns Like(CSSALES01) Dim(12)
+        DclArray LastRecordedYearSales Like(CSSALES01) Dim(MonthsInYear)
+        DclArray LastRecordedYearReturns Like(CSSALES01) Dim(MonthsInYear)
         DclFld LastRecordedYear Like(CSYEAR)
         DclFld month Type(Int16)
         
