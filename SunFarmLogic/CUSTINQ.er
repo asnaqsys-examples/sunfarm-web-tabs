@@ -15,6 +15,7 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
      DclConst CustomerSufilePageSize    19
      DclConst SaleEvent                 1
      DclConst ReturnEvent               2
+     DclConst MonthsInYear              12
 
     DclWorkStnFile CUSTDSPF DspFile("~\Areas\SunFarmViews\Pages\CUSTDSPF") Subfile( SFL1, sflrrn, SFL_SALESRETURNS, SalesSflrrn )
     
@@ -626,6 +627,7 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
         DclArray LastRecordedYearSales Like(CSSALES01) Dim(12)
         DclArray LastRecordedYearReturns Like(CSSALES01) Dim(12)
         DclFld LastRecordedYear Like(CSYEAR)
+        DclFld month Type(Int16)
         
         CustChk()
         If *IN80 
@@ -657,18 +659,9 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
         EndDo
 
         If LastRecordedYear *GT 0 
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[0], LastRecordedYearReturns[0]) // Jan
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[1], LastRecordedYearReturns[1]) // Feb
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[2], LastRecordedYearReturns[2]) // Mar
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[3], LastRecordedYearReturns[3]) // Apr
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[4], LastRecordedYearReturns[4]) // May
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[5], LastRecordedYearReturns[5]) // Jun
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[6], LastRecordedYearReturns[6]) // Jul
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[7], LastRecordedYearReturns[7]) // Aug
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[8], LastRecordedYearReturns[8]) // Sep
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[9], LastRecordedYearReturns[9]) // Oct
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[10], LastRecordedYearReturns[10]) // Nov
-            WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[11], LastRecordedYearReturns[11]) // Dec
+            For Index( month=0 ) To( MonthsInYear )  
+                WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[month], LastRecordedYearReturns[month])
+            EndFor
         EndIf
         
         SetOff IndList( *IN76, *IN90 ) // Display records.
