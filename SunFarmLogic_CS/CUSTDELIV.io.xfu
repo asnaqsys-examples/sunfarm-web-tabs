@@ -29,7 +29,7 @@
           <DeclaredInClass />
         </Record>
       </FileUsage>
-      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-ui-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\CUSTDELIV" FilePath="~\Areas\SunFarmViews\Pages\CUSTDELIV" FileType="WorkStnFile" FileFieldName="CUSTDELIV_File" Access="" IsStatic="false" UsesUpdateWithFields="false">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-logic-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\CUSTDELIV" FilePath="~\Areas\SunFarmViews\Pages\CUSTDELIV" FileType="WorkStnFile" FileFieldName="CUSTDELIV_File" Access="" IsStatic="false" UsesUpdateWithFields="false">
         <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
           <DeclaredInClass />
         </Record>

@@ -1,4 +1,4 @@
-﻿// Translated from Encore to C# on 9/27/2023 at 4:15:07 PM by ASNA Encore Translator® version 4.0.18.0
+﻿// Translated from Encore to C# on 10/5/2023 at 10:57:08 AM by ASNA Encore Translator® version 4.0.18.0
 // ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
 // Migrated source location: library ERCAP, file QRPGSRC, member CUSTSBMJOB
 
@@ -69,13 +69,13 @@ namespace ACME.SunFarm
         {
             int cparms = 2;
             bool _cleanup = true;
-            for (int _i11 = 0; _i11 <= 19; _i11++)
+            for (int _i13 = 0; _i13 <= 19; _i13++)
             {
-                pTypes[_i11] = _pTypes[_i11];
+                pTypes[_i13] = _pTypes[_i13];
             }
-            for (int _i12 = 0; _i12 <= 19; _i12++)
+            for (int _i14 = 0; _i14 <= 19; _i14++)
             {
-                pNumbers[_i12] = _pNumbers[_i12];
+                pNumbers[_i14] = _pNumbers[_i14];
             }
             try
             {

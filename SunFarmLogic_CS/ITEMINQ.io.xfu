@@ -2,7 +2,7 @@
 <ClassSet version="3">
   <Namespace Name="ACME.SunFarm">
     <Class Name="ITEMINQ">
-      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-ui-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\ITEMDSPF" FilePath="~\Areas\SunFarmViews\Pages\ITEMDSPF" FileType="WorkStnFile" FileFieldName="ITEMDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-logic-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\ITEMDSPF" FilePath="~\Areas\SunFarmViews\Pages\ITEMDSPF" FileType="WorkStnFile" FileFieldName="ITEMDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
         <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
           <DeclaredInClass />
         </Record>

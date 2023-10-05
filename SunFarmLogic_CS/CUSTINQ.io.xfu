@@ -2,7 +2,7 @@
 <ClassSet version="3">
   <Namespace Name="ACME.SunFarm">
     <Class Name="CUSTINQ">
-      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-ui-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\CUSTDSPF" FilePath="~\Areas\SunFarmViews\Pages\CUSTDSPF" FileType="WorkStnFile" FileFieldName="CUSTDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-logic-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\CUSTDSPF" FilePath="~\Areas\SunFarmViews\Pages\CUSTDSPF" FileType="WorkStnFile" FileFieldName="CUSTDSPF" Access="" IsStatic="false" UsesUpdateWithFields="false">
         <Record Name="SFLC" OriginalName="SFLC" UsesClearFormat="false">
           <DeclaredInClass />
         </Record>
@@ -13,6 +13,9 @@
           <DeclaredInClass />
         </Record>
         <Record Name="SALESREC" OriginalName="SALESREC" UsesClearFormat="false">
+          <DeclaredInClass />
+        </Record>
+        <Record Name="SFL_SALESRETURNS" OriginalName="SFL_SALESRETURNS" UsesClearFormat="false">
           <DeclaredInClass />
         </Record>
         <Record Name="KEYS" OriginalName="KEYS" UsesClearFormat="false">
@@ -91,6 +94,28 @@
           </DeclaredInClass>
         </Record>
       </FileUsage>
+      <FileUsage DBName="SQL_LINEAR" FilePath="*LIBL/CSMASTERL1" FileType="DBFile" FileFieldName="CSMASTERL1" Access="" IsStatic="false" UsesUpdateWithFields="false" IsProgramDescribed="false">
+        <Record Name="RCSMASTERL1" OriginalName="RCSMASTERL1" Alias="RCSMASTL1" UsesClearFormat="false">
+          <DeclaredInClass>
+            <Field Name="CSCUSTNO" />
+            <Field Name="CSYEAR" />
+            <Field Name="CSTYPE" />
+            <Field Name="CSSALES01" />
+            <Field Name="CSSALES02" />
+            <Field Name="CSSALES03" />
+            <Field Name="CSSALES04" />
+            <Field Name="CSSALES05" />
+            <Field Name="CSSALES06" />
+            <Field Name="CSSALES07" />
+            <Field Name="CSSALES08" />
+            <Field Name="CSSALES09" />
+            <Field Name="CSSALES10" />
+            <Field Name="CSSALES11" />
+            <Field Name="CSSALES12" />
+          </DeclaredInClass>
+        </Record>
+      </FileUsage>
+      <DSUsage DSName="CUSTSL" DBName="SQL_LINEAR" FilePath="*LIBL/CSMASTER" IsMods="false" IsGlobalScope="true" Access="" IsStatic="false" UsesBuffer="true" NoConstructor="true" />
       <DSUsage DSName="CUSTDS" DBName="SQL_LINEAR" FilePath="*LIBL/CUSTOMER" IsMods="false" IsGlobalScope="true" Access="" IsStatic="false" UsesBuffer="true">
         <Renames>
           <Field Name="CMACTIVE" Alias="CMACTIVE" />

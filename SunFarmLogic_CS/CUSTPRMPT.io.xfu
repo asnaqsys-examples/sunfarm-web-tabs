@@ -2,7 +2,7 @@
 <ClassSet version="3">
   <Namespace Name="ACME.SunFarm">
     <Class Name="CUSTPRMPT">
-      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-ui-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\CUSTPRMP" FilePath="~\Areas\SunFarmViews\Pages\CUSTPRMP" FileType="WorkStnFile" FileFieldName="CUSTPRMP" Access="" IsStatic="false" UsesUpdateWithFields="false">
+      <FileUsage WorkStnFilePath="C:\Projects\sunfarm-logic-enhancements\SunFarmSite\Areas\SunFarmViews\Pages\CUSTPRMP" FilePath="~\Areas\SunFarmViews\Pages\CUSTPRMP" FileType="WorkStnFile" FileFieldName="CUSTPRMP" Access="" IsStatic="false" UsesUpdateWithFields="false">
         <Record Name="MYWINDOW" OriginalName="MYWINDOW" UsesClearFormat="false">
           <DeclaredInClass>
             <Field Name="WINTITLE" />

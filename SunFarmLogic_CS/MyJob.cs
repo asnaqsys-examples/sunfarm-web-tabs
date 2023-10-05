@@ -1,4 +1,4 @@
-﻿// Translated from Encore to C# on 9/27/2023 at 4:15:07 PM by ASNA Encore Translator® version 4.0.18.0
+﻿// Translated from Encore to C# on 10/5/2023 at 10:57:08 AM by ASNA Encore Translator® version 4.0.18.0
 using ASNA.QSys.Runtime;
 using ASNA.DataGate.Common;
 using System;

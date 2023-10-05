@@ -1,4 +1,4 @@
-﻿// Translated from Encore to C# on 9/27/2023 at 4:15:07 PM by ASNA Encore Translator® version 4.0.18.0
+﻿// Translated from Encore to C# on 10/5/2023 at 10:57:08 AM by ASNA Encore Translator® version 4.0.18.0
 // ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
 // Migrated source location: library ERCAP, file QRPGSRC, member CUSTINQ
 
@@ -18,42 +18,19 @@ namespace ACME.SunFarm
     {
         protected dynamic _DynamicCaller;
 
-        const decimal CustomerSufilePageSize = 14 + 5;
+        const decimal CustomerSufilePageSize = 19;
+        const decimal SaleEvent = 1;
 
-        //      ********************************************************************
-        //       JB   8/27/2004   Added F4 (Prompt) options.
-        //       JB   8/30/2004   Added 'submit job' option.
-        //       JB   9/01/2004   Fixed record locking problem.
-        //       JB   5/19/2005   Added colouring to the name/addr subfile.
-        //                        Added cursor postioning to the detail format.
-        //                        Added option to print sales online or in batch.
-        //                        Changed the prompt display to a window.
-        //       JB   5/23/2005   Added /COPY for reading CUSTOMERL1.
-        //                        Added customer name to the sales summary format.
-        //                        Added renaming of CUSTOMERL1 record format.
-        //       JB   5/24/2005   Simplified the LoadSfl subroutine.
-        //       JB   5/31/2005   Added PageDown/RollUp processing.
-        //       JB   6/01/2005   Renamed CMMASTER* files to CUSTOMER*.
-        //       JB  14/02/2006   Fixed bug in page up on the customer subfile -
-        //                        a customer record was skipped every time.
-        //      ********************************************************************
-        //       INDICATORS:
-        //         03     F3 pressed
-        //         09     F9 pressed
-        //         40-44  Cursor positioning
-        //         50     PageUp pressed
-        //         51     PageDown pressed
-        //         66     EOF reading on the subfile
-        //         76     BOF reading CUSTOMERL2
-        //         77     EOF reading CUSTMOMER2
-        //         88     LR seton in a called program
-        //         99     General error indicator
-        //      ********************************************************************
         WorkstationFile CUSTDSPF;
-        //                                    HANDLER('ASNAWINGS')
+
         DatabaseFile CUSTOMERL2;
         DatabaseFile CUSTOMERL1;
         DatabaseFile CUSTOMERL1_ReadOnly;
+        DatabaseFile CSMASTERL1;
+
+        DataStructure CUSTSL;
+        FixedDecimalArrayInDS<_12, _11, _2> YearlySales; 
+
         //********************************************************************
         DataStructure _DS0 = new (3);
         FixedDecimal<_3, _0> hpNbrs { get => _DS0.GetZoned(0, 3, 0); set => _DS0.SetZoned(value, 0, 3, 0); } 
@@ -63,8 +40,6 @@ namespace ACME.SunFarm
         FixedStringArray<_20, _1> pTypes;
         FixedString<_7> MID;
         FixedString<_30> MTX;
-        FixedDecimal<_13, _2> Sales;
-        FixedDecimal<_13, _2> Returns;
         FixedString<_1> LockRec;
         FixedDecimal<_9, _0> CmCusth;
         FixedString<_13> SalesCh;
@@ -97,6 +72,8 @@ namespace ACME.SunFarm
         FixedDecimal<_4, _0> sflrrn;
         FixedDecimal<_9, _0> TEMPNO;
 
+        FixedDecimal<_4, _0> SalesSflrrn;
+
         // PLIST(s) relocated by Monarch
         
         // KLIST(s) relocated by Monarch
@@ -111,6 +88,8 @@ namespace ACME.SunFarm
             CUSTOMERL1.Open(CurrentJob.Database, AccessMode.RWCD, false, false, ServerCursors.Default);
             CUSTOMERL1_ReadOnly.Open(CurrentJob.Database, AccessMode.Read, false, false, ServerCursors.Default);
             CUSTOMERL2.Open(CurrentJob.Database, AccessMode.Read, false, false, ServerCursors.Default);
+            CSMASTERL1.Open(CurrentJob.Database, AccessMode.Read, false, false, ServerCursors.Default);
+
         }
 
         override public void Dispose(bool disposing)
@@ -122,6 +101,7 @@ namespace ACME.SunFarm
                 CUSTOMERL2.Close();
                 CUSTOMERL1.Close();
                 CUSTOMERL1_ReadOnly.Close();
+                CSMASTERL1.Close();
             }
             base.Dispose(disposing);
         }
@@ -237,8 +217,8 @@ namespace ACME.SunFarm
                                 }
                                 else if (SFSEL == 3)
                                 {
-                                    // Display sales and
-                                    CUSTDSPF.ChainByRRN("SFL1", (int)sflrrn, _IN.Array); //  returns totals.
+                                    // Display sales and returns. 
+                                    CUSTDSPF.ChainByRRN("SFL1", (int)sflrrn, _IN.Array);
                                     SalesInfo();
 
                                 }
@@ -565,8 +545,6 @@ namespace ACME.SunFarm
             CustChk();
 
             CmCusth = CMCUSTNO;
-            Sales = 0m;
-            Returns = 0m;
             CmCusthCH = CMCUSTNO.MoveRight(CmCusthCH);
             SalesCh = new string('0', 13);
             ReturnsCh = new string('0', 13);
@@ -577,11 +555,11 @@ namespace ACME.SunFarm
 
             do
             {
+                LoadSalesAndReturns();
                 CUSTDSPF.ExFmt("SALESREC", _IN.Array);
             } while (!(bool)_IN[3] && !(bool)_IN[12]);
 
             _IN[3] = '0';
-
         }
 
 
@@ -726,11 +704,85 @@ namespace ACME.SunFarm
             _DynamicCaller.CallD("ACME.SunFarm.MSGCLR", out _LR);
         }
 
+        void LoadSalesAndReturns()
+        {
+            FixedDecimalArray<_12, _11, _2> LastRecordedYearSales = new FixedDecimalArray<_12, _11, _2>((FixedDecimal<_11, _2>[])null);
+            FixedDecimalArray<_12, _11, _2> LastRecordedYearReturns = new FixedDecimalArray<_12, _11, _2>((FixedDecimal<_11, _2>[])null);
+            FixedDecimal<_4, _0> LastRecordedYear = 0;
+
+            CustChk();
+            if ((bool)_IN[80])
+                throw new Return();
+
+            _IN[90] = '1';
+            CUSTDSPF.Write("SALESREC", _IN.Array);
+
+            SalesSflrrn = 0m;
+            LastRecordedYear = 0m;
+
+            CSMASTERL1.Seek(SeekMode.SetLL, CMCUSTNO);
+            _IN[3] = CSMASTERL1.ReadNextEqual(true, CMCUSTNO) ? '0' : '1';
+
+            while (!(bool)_IN[3])
+            {
+
+                if (CSYEAR >= LastRecordedYear)
+                {
+                    LastRecordedYear = CSYEAR;
+
+                    if (CSTYPE == SaleEvent)
+                    {
+                        for (int _i11 = 0; _i11 <= 11; _i11++)
+                        {
+                            LastRecordedYearSales[_i11] = YearlySales[_i11];
+                        }
+                    }
+                    else
+                    {
+                        for (int _i12 = 0; _i12 <= 11; _i12++)
+                        {
+                            LastRecordedYearReturns[_i12] = YearlySales[_i12];
+                        }
+                    }
+                }
+
+                _IN[3] = CSMASTERL1.ReadNextEqual(true, CMCUSTNO) ? '0' : '1'; // Read Next
+            }
+
+            if (LastRecordedYear > 0m)
+            {
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[0], LastRecordedYearReturns[0]); // Jan
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[1], LastRecordedYearReturns[1]); // Feb
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[2], LastRecordedYearReturns[2]); // Mar
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[3], LastRecordedYearReturns[3]); // Apr
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[4], LastRecordedYearReturns[4]); // May
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[5], LastRecordedYearReturns[5]); // Jun
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[6], LastRecordedYearReturns[6]); // Jul
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[7], LastRecordedYearReturns[7]); // Aug
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[8], LastRecordedYearReturns[8]); // Sep
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[9], LastRecordedYearReturns[9]); // Oct
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[10], LastRecordedYearReturns[10]); // Nov
+                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[11], LastRecordedYearReturns[11]); // Dec
+            }
+
+            _IN[76] = '0';
+            _IN[90] = '0';
+            CUSTDSPF.Write("SALESREC", _IN.Array);
+        }
+
+        void WriteSalesReturnsSubfileRecord(FixedDecimal<_4, _0> _year, FixedDecimal<_11, _2> _sales, FixedDecimal<_11, _2> _returns)
+        {
+            YEAR = _year;
+            SALES = _sales;
+            RETURNS = _returns;
+
+            SalesSflrrn = SalesSflrrn + 1;
+            CUSTDSPF.WriteSubfile("SFL_SALESRETURNS", (int)SalesSflrrn, _IN.Array);
+        }
+
         //********************************************************************
         //   CHECK THE CUSTOMER NUMBER
         //********************************************************************
-        // Message handling parm list
-        // PLIST "#PLMSG" moved by Monarch to global scope.
         void CustChk()
         {
             if (LockRec == "N")
@@ -830,6 +882,11 @@ namespace ACME.SunFarm
             { IsDefaultRFN = true };
             CUSTOMERL1_ReadOnly = new DatabaseFile(PopulateBufferCUSTOMERL1_ReadOnly, PopulateFieldsCUSTOMERL1_ReadOnly, null, "CUSTOMERL1_ReadOnly", "*LIBL/CUSTOMERL1", CUSTOMERL1_ReadOnlyFormatIDs)
             { IsDefaultRFN = true };
+            CSMASTERL1 = new DatabaseFile(PopulateBufferCSMASTERL1, PopulateFieldsCSMASTERL1, null, "CSMASTERL1", "*LIBL/CSMASTERL1", CSMASTERL1FormatIDs)
+            { IsDefaultRFN = true };
+            CUSTSL = new (extSizeCUSTSL, CUSTSL_000, CUSTSL_001, CUSTSL_002, CUSTSL_003, CUSTSL_004, CUSTSL_005, CUSTSL_006, CUSTSL_007, 
+                CUSTSL_008, CUSTSL_009, CUSTSL_010, CUSTSL_011, CUSTSL_012, CUSTSL_013, CUSTSL_014, (Layout.PackedArray(12, 11, 2), 10));
+            YearlySales = new FixedDecimalArrayInDS<_12, _11, _2>(CUSTSL, LayoutType.Packed, 10);
             CUSTDS = new (extSizeCUSTDS, CUSTDS_000, CUSTDS_001, CUSTDS_002, CUSTDS_003, CUSTDS_004, CUSTDS_005, CUSTDS_006, CUSTDS_007, 
                 CUSTDS_008, CUSTDS_009, CUSTDS_010, CUSTDS_011, CUSTDS_012, CUSTDS_013, CUSTDS_014, CUSTDS_015);
         }

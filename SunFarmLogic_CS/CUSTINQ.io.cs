@@ -48,9 +48,28 @@ namespace ACME.SunFarm
         private FixedString<_40> SFNAME;
         private FixedDecimal<_13, _2> SFSALES;
         private FixedDecimal<_13, _2> SFRETURNS;
+        private FixedDecimal<_4, _0> YEAR;
+        private FixedDecimal<_11, _2> SALES;
+        private FixedDecimal<_11, _2> RETURNS;
         private FixedString<_10> aPGMQ;
         private FixedString<_4> aMSGKY;
         private FixedString<Len<_1, _2, _8>> MESSAGETEXT;
+        static (ILayout layout, int position) CUSTSL_000 = (Layout.Packed(9, 0), 0);
+        static (ILayout layout, int position) CUSTSL_001 = (Layout.Zoned(4, 0), 5);
+        static (ILayout layout, int position) CUSTSL_002 = (Layout.Zoned(1, 0), 9);
+        static (ILayout layout, int position) CUSTSL_003 = (Layout.Packed(11, 2), 10);
+        static (ILayout layout, int position) CUSTSL_004 = (Layout.Packed(11, 2), 16);
+        static (ILayout layout, int position) CUSTSL_005 = (Layout.Packed(11, 2), 22);
+        static (ILayout layout, int position) CUSTSL_006 = (Layout.Packed(11, 2), 28);
+        static (ILayout layout, int position) CUSTSL_007 = (Layout.Packed(11, 2), 34);
+        static (ILayout layout, int position) CUSTSL_008 = (Layout.Packed(11, 2), 40);
+        static (ILayout layout, int position) CUSTSL_009 = (Layout.Packed(11, 2), 46);
+        static (ILayout layout, int position) CUSTSL_010 = (Layout.Packed(11, 2), 52);
+        static (ILayout layout, int position) CUSTSL_011 = (Layout.Packed(11, 2), 58);
+        static (ILayout layout, int position) CUSTSL_012 = (Layout.Packed(11, 2), 64);
+        static (ILayout layout, int position) CUSTSL_013 = (Layout.Packed(11, 2), 70);
+        static (ILayout layout, int position) CUSTSL_014 = (Layout.Packed(11, 2), 76);
+        const int extSizeCUSTSL = 82;
         static (ILayout layout, int position) CUSTDS_000 = (Layout.Packed(9, 0), 0);
         static (ILayout layout, int position) CUSTDS_001 = (Layout.FixedString(40), 5);
         static (ILayout layout, int position) CUSTDS_002 = (Layout.FixedString(35), 45);
@@ -80,7 +99,176 @@ namespace ACME.SunFarm
         {
             { "RCUSTOMERL1", "6su4S42+ard0ZHitdjHOFT1WPw0=" }
         };
+        private static Dictionary<string, string> CSMASTERL1FormatIDs = new Dictionary<string, string>()
+        {
+            { "RCSMASTERL1", "MNWSCMjX4uCVz4ny/YR2N6c1XTM=" }
+        };
 
+        private FixedDecimal<_9, _0> CSCUSTNO
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(0, 9, 0);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 0, 9, 0);
+            }
+        }
+        private FixedDecimal<_4, _0> CSYEAR
+        {
+            get
+            {
+                return this.CUSTSL.GetZoned(5, 4, 0);
+            }
+            set
+            {
+                this.CUSTSL.SetZoned(value, 5, 4, 0);
+            }
+        }
+        private FixedDecimal<_1, _0> CSTYPE
+        {
+            get
+            {
+                return this.CUSTSL.GetZoned(9, 1, 0);
+            }
+            set
+            {
+                this.CUSTSL.SetZoned(value, 9, 1, 0);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES01
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(10, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 10, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES02
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(16, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 16, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES03
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(22, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 22, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES04
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(28, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 28, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES05
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(34, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 34, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES06
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(40, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 40, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES07
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(46, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 46, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES08
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(52, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 52, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES09
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(58, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 58, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES10
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(64, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 64, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES11
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(70, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 70, 11, 2);
+            }
+        }
+        private FixedDecimal<_11, _2> CSSALES12
+        {
+            get
+            {
+                return this.CUSTSL.GetPacked(76, 11, 2);
+            }
+            set
+            {
+                this.CUSTSL.SetPacked(value, 76, 11, 2);
+            }
+        }
         private FixedDecimal<_9, _0> CMCUSTNO
         {
             get
@@ -343,6 +531,22 @@ namespace ACME.SunFarm
         private void PopulateFieldsCUSTDSPFSALESREC(AdgDataSet _dataSet)
         {
         }
+        private void PopulateBufferCUSTDSPFSFL_SALESRETURNS(AdgDataSet _dataSet)
+        {
+            var _table = _dataSet.GetAdgTable("SFL_SALESRETURNS");
+            System.Data.DataRow _row = _table.Row;
+            _row["YEAR"] = ((decimal)(YEAR));
+            _row["SALES"] = ((decimal)(SALES));
+            _row["RETURNS"] = ((decimal)(RETURNS));
+        }
+        private void PopulateFieldsCUSTDSPFSFL_SALESRETURNS(AdgDataSet _dataSet)
+        {
+            var _table = _dataSet.GetAdgTable("SFL_SALESRETURNS");
+            System.Data.DataRow _row = _table.Row;
+            YEAR = ((decimal)(_row["YEAR"]));
+            SALES = ((decimal)(_row["SALES"]));
+            RETURNS = ((decimal)(_row["RETURNS"]));
+        }
         private void PopulateBufferCUSTDSPFKEYS(AdgDataSet _dataSet)
         {
         }
@@ -400,25 +604,32 @@ namespace ACME.SunFarm
                         }
                         else
                         {
-                            if (string.Equals(_recordFormatName, "KEYS", System.StringComparison.CurrentCultureIgnoreCase))
+                            if (string.Equals(_recordFormatName, "SFL_SALESRETURNS", System.StringComparison.CurrentCultureIgnoreCase))
                             {
-                                this.PopulateBufferCUSTDSPFKEYS(_dataSet);
+                                this.PopulateBufferCUSTDSPFSFL_SALESRETURNS(_dataSet);
                             }
                             else
                             {
-                                if (string.Equals(_recordFormatName, "MSGSFC", System.StringComparison.CurrentCultureIgnoreCase))
+                                if (string.Equals(_recordFormatName, "KEYS", System.StringComparison.CurrentCultureIgnoreCase))
                                 {
-                                    this.PopulateBufferCUSTDSPFMSGSFC(_dataSet);
+                                    this.PopulateBufferCUSTDSPFKEYS(_dataSet);
                                 }
                                 else
                                 {
-                                    if (string.Equals(_recordFormatName, "MSGSF", System.StringComparison.CurrentCultureIgnoreCase))
+                                    if (string.Equals(_recordFormatName, "MSGSFC", System.StringComparison.CurrentCultureIgnoreCase))
                                     {
-                                        this.PopulateBufferCUSTDSPFMSGSF(_dataSet);
+                                        this.PopulateBufferCUSTDSPFMSGSFC(_dataSet);
                                     }
                                     else
                                     {
-                                        throw new System.InvalidOperationException($"Invalid record format {_recordFormatName} while writing file CUSTDSPF.");
+                                        if (string.Equals(_recordFormatName, "MSGSF", System.StringComparison.CurrentCultureIgnoreCase))
+                                        {
+                                            this.PopulateBufferCUSTDSPFMSGSF(_dataSet);
+                                        }
+                                        else
+                                        {
+                                            throw new System.InvalidOperationException($"Invalid record format {_recordFormatName} while writing file CUSTDSPF.");
+                                        }
                                     }
                                 }
                             }
@@ -453,25 +664,32 @@ namespace ACME.SunFarm
                         }
                         else
                         {
-                            if (string.Equals(_recordFormatName, "KEYS", System.StringComparison.CurrentCultureIgnoreCase))
+                            if (string.Equals(_recordFormatName, "SFL_SALESRETURNS", System.StringComparison.CurrentCultureIgnoreCase))
                             {
-                                this.PopulateFieldsCUSTDSPFKEYS(_dataSet);
+                                this.PopulateFieldsCUSTDSPFSFL_SALESRETURNS(_dataSet);
                             }
                             else
                             {
-                                if (string.Equals(_recordFormatName, "MSGSFC", System.StringComparison.CurrentCultureIgnoreCase))
+                                if (string.Equals(_recordFormatName, "KEYS", System.StringComparison.CurrentCultureIgnoreCase))
                                 {
-                                    this.PopulateFieldsCUSTDSPFMSGSFC(_dataSet);
+                                    this.PopulateFieldsCUSTDSPFKEYS(_dataSet);
                                 }
                                 else
                                 {
-                                    if (string.Equals(_recordFormatName, "MSGSF", System.StringComparison.CurrentCultureIgnoreCase))
+                                    if (string.Equals(_recordFormatName, "MSGSFC", System.StringComparison.CurrentCultureIgnoreCase))
                                     {
-                                        this.PopulateFieldsCUSTDSPFMSGSF(_dataSet);
+                                        this.PopulateFieldsCUSTDSPFMSGSFC(_dataSet);
                                     }
                                     else
                                     {
-                                        throw new System.InvalidOperationException($"Invalid record format {_recordFormatName} while reading file CUSTDSPF.");
+                                        if (string.Equals(_recordFormatName, "MSGSF", System.StringComparison.CurrentCultureIgnoreCase))
+                                        {
+                                            this.PopulateFieldsCUSTDSPFMSGSF(_dataSet);
+                                        }
+                                        else
+                                        {
+                                            throw new System.InvalidOperationException($"Invalid record format {_recordFormatName} while reading file CUSTDSPF.");
+                                        }
                                     }
                                 }
                             }
@@ -605,6 +823,46 @@ namespace ACME.SunFarm
             CMYN01 = ((string)(_row["CMYN01"]));
             CMYN02 = ((string)(_row["CMYN02"]));
             CMYN03 = ((string)(_row["CMYN03"]));
+        }
+        private void PopulateBufferCSMASTERL1(string _, AdgDataSet _dataSet)
+        {
+            var _table = _dataSet.GetAdgTable("*FILE");
+            System.Data.DataRow _row = _table.Row;
+            _row["CSCUSTNO"] = ((decimal)(CSCUSTNO));
+            _row["CSYEAR"] = ((decimal)(CSYEAR));
+            _row["CSTYPE"] = ((decimal)(CSTYPE));
+            _row["CSSALES01"] = ((decimal)(CSSALES01));
+            _row["CSSALES02"] = ((decimal)(CSSALES02));
+            _row["CSSALES03"] = ((decimal)(CSSALES03));
+            _row["CSSALES04"] = ((decimal)(CSSALES04));
+            _row["CSSALES05"] = ((decimal)(CSSALES05));
+            _row["CSSALES06"] = ((decimal)(CSSALES06));
+            _row["CSSALES07"] = ((decimal)(CSSALES07));
+            _row["CSSALES08"] = ((decimal)(CSSALES08));
+            _row["CSSALES09"] = ((decimal)(CSSALES09));
+            _row["CSSALES10"] = ((decimal)(CSSALES10));
+            _row["CSSALES11"] = ((decimal)(CSSALES11));
+            _row["CSSALES12"] = ((decimal)(CSSALES12));
+        }
+        private void PopulateFieldsCSMASTERL1(string _, AdgDataSet _dataSet)
+        {
+            var _table = _dataSet.SetActive("*FILE");
+            System.Data.DataRow _row = _table.Row;
+            CSCUSTNO = ((decimal)(_row["CSCUSTNO"]));
+            CSYEAR = ((decimal)(_row["CSYEAR"]));
+            CSTYPE = ((decimal)(_row["CSTYPE"]));
+            CSSALES01 = ((decimal)(_row["CSSALES01"]));
+            CSSALES02 = ((decimal)(_row["CSSALES02"]));
+            CSSALES03 = ((decimal)(_row["CSSALES03"]));
+            CSSALES04 = ((decimal)(_row["CSSALES04"]));
+            CSSALES05 = ((decimal)(_row["CSSALES05"]));
+            CSSALES06 = ((decimal)(_row["CSSALES06"]));
+            CSSALES07 = ((decimal)(_row["CSSALES07"]));
+            CSSALES08 = ((decimal)(_row["CSSALES08"]));
+            CSSALES09 = ((decimal)(_row["CSSALES09"]));
+            CSSALES10 = ((decimal)(_row["CSSALES10"]));
+            CSSALES11 = ((decimal)(_row["CSSALES11"]));
+            CSSALES12 = ((decimal)(_row["CSSALES12"]));
         }
     }
 }
