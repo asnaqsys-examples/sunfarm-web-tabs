@@ -205,8 +205,8 @@ namespace ACME.SunFarm.SunFarmViews
                 if (SFL_SalesReturns.Count == 0)
                     return;
 
-                decimal[] chartSales = new decimal[12];
-                decimal[] chartReturns = new decimal[12];
+                decimal[] chartSales = new decimal[SFL_SalesReturns.Count];
+                decimal[] chartReturns = new decimal[SFL_SalesReturns.Count];
 
                 for( int i =0; i < SFL_SalesReturns.Count; i++ )
                 {
