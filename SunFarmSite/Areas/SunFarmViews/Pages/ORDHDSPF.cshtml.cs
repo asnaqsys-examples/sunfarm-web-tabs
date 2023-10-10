@@ -40,7 +40,8 @@ namespace ACME.SunFarm.SunFarmViews
         }
 
         [
-            Record(FunctionKeys = "F4 04;F11 11:!30")
+            Record(FunctionKeys = "F4 04;F11 11:!30",
+            EraseFormats ="SFLC, KEYS")
         ]
         public class ORDHREC_Model : RecordModel
         {
