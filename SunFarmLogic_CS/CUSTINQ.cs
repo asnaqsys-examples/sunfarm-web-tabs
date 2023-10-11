@@ -1,4 +1,4 @@
-﻿// Translated from Encore to C# on 10/5/2023 at 10:57:08 AM by ASNA Encore Translator® version 4.0.18.0
+﻿// Translated from Encore to C# on 10/11/2023 at 10:10:23 AM by ASNA Encore Translator® version 4.0.18.0
 // ASNA Monarch(R) version 11.4.12.0 at 8/25/2023
 // Migrated source location: library ERCAP, file QRPGSRC, member CUSTINQ
 
@@ -20,6 +20,7 @@ namespace ACME.SunFarm
 
         const decimal CustomerSufilePageSize = 19;
         const decimal SaleEvent = 1;
+        const decimal MonthsInYear = 12;
 
         WorkstationFile CUSTDSPF;
 
@@ -709,6 +710,7 @@ namespace ACME.SunFarm
             FixedDecimalArray<_12, _11, _2> LastRecordedYearSales = new FixedDecimalArray<_12, _11, _2>((FixedDecimal<_11, _2>[])null);
             FixedDecimalArray<_12, _11, _2> LastRecordedYearReturns = new FixedDecimalArray<_12, _11, _2>((FixedDecimal<_11, _2>[])null);
             FixedDecimal<_4, _0> LastRecordedYear = 0;
+            short month = 0;
 
             CustChk();
             if ((bool)_IN[80])
@@ -751,18 +753,10 @@ namespace ACME.SunFarm
 
             if (LastRecordedYear > 0m)
             {
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[0], LastRecordedYearReturns[0]); // Jan
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[1], LastRecordedYearReturns[1]); // Feb
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[2], LastRecordedYearReturns[2]); // Mar
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[3], LastRecordedYearReturns[3]); // Apr
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[4], LastRecordedYearReturns[4]); // May
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[5], LastRecordedYearReturns[5]); // Jun
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[6], LastRecordedYearReturns[6]); // Jul
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[7], LastRecordedYearReturns[7]); // Aug
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[8], LastRecordedYearReturns[8]); // Sep
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[9], LastRecordedYearReturns[9]); // Oct
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[10], LastRecordedYearReturns[10]); // Nov
-                WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[11], LastRecordedYearReturns[11]); // Dec
+                for (month = 0; month <= (short)MonthsInYear; month++)
+                {
+                    WriteSalesReturnsSubfileRecord(LastRecordedYear, LastRecordedYearSales[(int)month], LastRecordedYearReturns[(int)month]);
+                }
             }
 
             _IN[76] = '0';
