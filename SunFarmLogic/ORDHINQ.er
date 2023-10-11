@@ -213,6 +213,7 @@ BegClass ORDHINQ Extends(Program) Access(*Public) +
     //-------------------------------------------------------
         DoUntil ( *IN12)
             Write MSGSFC
+            WINTITLE = "Update Order Header"
             Write MYWINDOW
             ExFmt ORDHREC 
             SetOff IndList( *IN40, *IN41, *IN42 )

@@ -40,7 +40,7 @@ namespace ACME.SunFarm.SunFarmViews
         }
 
         [
-            Record(FunctionKeys = "F4 04:!88")
+            Record(FunctionKeys = "F4 04:!88",EraseFormats ="SFLC, KEYS")
         ]
         public class ORDLINE_Model : RecordModel
         {
