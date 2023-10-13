@@ -60,6 +60,7 @@ for details on configuring this project to bundle and minify static web assets. 
     border-width: medium;
 }
 
+/* Tab navigation area: no scrollbars, thin border. */
 .tab-navigation {
     overflow: hidden;
     border: 1px solid #ccc;
@@ -82,16 +83,16 @@ for details on configuring this project to bundle and minify static web assets. 
     background-color: #ddd;
 }
 
-/* Create an active/curremt tablink class */
+/* Create an active/current tab-links class */
 .tab-navigation button.active {
     background-color: #ccc;
 }
 
-/* Create an active/curremt tablink class */
-.tab-navigation button.active {
-    background-color: #ccc;
+/* tab-links used only as a flag to search elements of the class */
+.tab-links {
 }
 
+/* Tabs initially hidden, with border (except for top). Height set (may grow). */
 .tab-content {
     display: none;
     padding: 6px 12px;
