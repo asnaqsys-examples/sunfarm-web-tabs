@@ -70,12 +70,12 @@
                     <DdsConstant Col="1" Text=" " />
                 </div>
 
-                <nav class="tab">
-                    <button id="initial-tab" type="button" class="tablinks" onclick="openTab(event.currentTarget)">Order Header</button>
-                    <button type="button" class="tablinks" onclick="openTab(event.currentTarget)">Order Details</button>
+                <nav class="tab-navigation">
+                    <button id="initial-tab" type="button" class="tab-links" onclick="openTab(event.currentTarget)">Order Header</button>
+                    <button type="button" class="tab-links" onclick="openTab(event.currentTarget)">Order Details</button>
                 </nav>
 
-                <div id="Order Header" class="tabcontent">
+                <div id="Order Header" class="tab-content">
                     <div Row="4">
                         <DdsConstant Col="2" ColSpan="-1" class="right-aligned-constant" Color="darkblue" Text="Customer:" />
                         <DdsCharField Col="12+1" For="SFLC.SCRCUST" Comment="CUSTOMER NBR AND NAME" />
@@ -116,7 +116,7 @@
                     </div>
                 </div>
 
-                <div id="Order Details" class="tabcontent">
+                <div id="Order Details" class="tab-content">
                     <div Row="13">
                         <DdsConstant Col="2" Text="Options:" Color="Blue" />
                     </div>

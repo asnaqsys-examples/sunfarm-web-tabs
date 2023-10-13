@@ -60,14 +60,14 @@ for details on configuring this project to bundle and minify static web assets. 
     border-width: medium;
 }
 
-.tab {
+.tab-navigation {
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
 }
 
-/* Style the buttons that are used to open the tab content */
-.tab button {
+/* Style the buttons that are used to open the tab-navigation content */
+.tab-navigation button {
     background-color: inherit;
     float: left;
     border: none;
@@ -78,21 +78,21 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 /* Change background color or buttons on hover */
-.tab button:hover {
+.tab-navigation button:hover {
     background-color: #ddd;
 }
 
 /* Create an active/curremt tablink class */
-.tab button.active {
+.tab-navigation button.active {
     background-color: #ccc;
 }
 
 /* Create an active/curremt tablink class */
-.tab button.active {
+.tab-navigation button.active {
     background-color: #ccc;
 }
 
-.tabcontent {
+.tab-content {
     display: none;
     padding: 6px 12px;
     border: 1px solid #ccc;
