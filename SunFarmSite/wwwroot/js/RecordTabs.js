@@ -2,13 +2,13 @@
     const tabPage = document.getElementById(tabNavButton.innerHTML);
 
     if (tabPage) {
-        // Get all the elements with class="tabcontent" and hide them
+        // Get all the elements with class="tab-content" and hide them
         const tabcontent = document.querySelectorAll('[class~="tab-content"]');
         for (let i = 0, l = tabcontent.length; i < l; i++) {
             tabcontent[i].style.display = 'none';
         }
 
-        // Get all elements with class="tablinks" and remove the class "active"
+        // Get all elements with class="tab-links" and remove the class "active"
         const tablinks = document.querySelectorAll('[class~="tab-links"]');
         for (let i = 0, l = tablinks.length; i < l; i++) {
             tablinks[i].className = tablinks[i].className.replace(' active', '');
