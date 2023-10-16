@@ -71,11 +71,11 @@
                 </div>
 
                 <nav class="tab-navigation">
-                    <button id="initial-tab" type="button" class="tab-links" onclick="openTab(event.currentTarget)">Order Header</button>
-                    <button type="button" class="tab-links" onclick="openTab(event.currentTarget)">Order Details</button>
+                    <button id="initial-tab" type="button" class="tab-links" onclick="openTab(event.currentTarget)">Customer Info</button>
+                    <button type="button" class="tab-links" onclick="openTab(event.currentTarget)">Order List</button>
                 </nav>
 
-                <div id="Order Header" class="tab-content">
+                <div id="Customer Info" class="tab-content">
                     <div Row="4">
                         <DdsConstant Col="2" ColSpan="-1" class="right-aligned-constant" Color="darkblue" Text="Customer:" />
                         <DdsCharField Col="12+1" For="SFLC.SCRCUST" Comment="CUSTOMER NBR AND NAME" />
@@ -116,7 +116,7 @@
                     </div>
                 </div>
 
-                <div id="Order Details" class="tab-content">
+                <div id="Order List" class="tab-content">
                     <div Row="13">
                         <DdsConstant Col="2" Text="Options:" Color="Blue" />
                     </div>
@@ -139,13 +139,13 @@
                             int row = 16 + rrn;
                             <DdsSubfileRecord RecordNumber="rrn" For="SFLC.SFL1">
                                 <DdsDecField Col="2" For="SFLC.SFL1[rrn].SFSEL" VisibleCondition="!( 60 )" VirtualRowCol="@row,2" EditCode="Z" ValuesText="'0','2','3','6'" tabIndex=@pageTabIndex++ />
-                                <DdsDecField Col="7+1" For="SFLC.SFL1[rrn].SFORDNUM" Color="Green : !61 , DarkBlue : 61" InvertFontColors="*True" EditCode="Z" />
-                                <DdsDateField Col="19+1" For="SFLC.SFL1[rrn].SFORDDATE"  Color="Green : !61 , DarkBlue : 61" InvertFontColors="*True" Comment="ORDER DATE" />
-                                <DdsDateField Col="30+1" For="SFLC.SFL1[rrn].SFSHPDATE"  Color="Green : !61 , DarkBlue : 61" InvertFontColors="*True" Comment="PRICE" />
-                                <DdsDecDateField Col="41+1" For="SFLC.SFL1[rrn].SFDELDATE" DateFormat="ISO" DateSeparator="-" Color="Green : !61 , DarkBlue : 61" InvertFontColors="*True" />
-                                <DdsDecField Col="52+1" For="SFLC.SFL1[rrn].SFORDAMT" Color="Green : !61 , DarkBlue : 61" InvertFontColors="*True" EditCode="A" />
-                                <DdsCharField Col="71+1" For="SFLC.SFL1[rrn].SFFILESTAT" Color="Green : !61 , DarkBlue : 61" InvertFontColors="*True" />
-                                <DdsDecField Col="76+1" For="SFLC.SFL1[rrn].SFSHPVIA" Color="Green : !61 , DarkBlue : 61" InvertFontColors="*True" EditCode="Z" />
+                                <DdsDecField Col="7+1" For="SFLC.SFL1[rrn].SFORDNUM" Color="Green : !61 , DarkBlue : 61" EditCode="Z" />
+                                <DdsDateField Col="19+1" For="SFLC.SFL1[rrn].SFORDDATE"  Color="Green : !61 , DarkBlue : 61" Comment="ORDER DATE" />
+                                <DdsDateField Col="30+1" For="SFLC.SFL1[rrn].SFSHPDATE"  Color="Green : !61 , DarkBlue : 61" Comment="PRICE" />
+                                <DdsDecDateField Col="41+1" For="SFLC.SFL1[rrn].SFDELDATE" DateFormat="ISO" DateSeparator="-" Color="Green : !61 , DarkBlue : 61" />
+                                <DdsDecField Col="52+1" For="SFLC.SFL1[rrn].SFORDAMT" Color="Green : !61 , DarkBlue : 61" EditCode="A" />
+                                <DdsCharField Col="71+1" For="SFLC.SFL1[rrn].SFFILESTAT" Color="Green : !61 , DarkBlue : 61" />
+                                <DdsDecField Col="76+1" For="SFLC.SFL1[rrn].SFSHPVIA" Color="Green : !61 , DarkBlue : 61" EditCode="Z" />
                             </DdsSubfileRecord>
                         }
                     </div>
