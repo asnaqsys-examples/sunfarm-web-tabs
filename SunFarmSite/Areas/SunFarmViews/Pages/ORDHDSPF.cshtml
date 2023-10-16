@@ -71,7 +71,7 @@
                 </div>
 
                 <nav class="tab-navigation">
-                    <button id="initial-tab" type="button" class="tab-links" onclick="openTab(event.currentTarget)">Customer Info</button>
+                    <button type="button" class="tab-links" onclick="openTab(event.currentTarget)">Customer Info</button>
                     <button type="button" class="tab-links" onclick="openTab(event.currentTarget)">Order List</button>
                 </nav>
 
@@ -179,5 +179,11 @@
 
 <script src="~/js/RecordTabs.js"></script>
 <script>
-    openTab(document.getElementById('initial-tab'));
+    let lastTabName = getLastTabNameFromSessionStorage();
+    if (!lastTabName) {
+        openTabByName('Customer Info');
+    }
+    else {
+        openTabByName(lastTabName);
+    }
 </script>
