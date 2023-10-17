@@ -179,7 +179,7 @@
 
 <script src="~/js/RecordTabs.js"></script>
 <script>
-    let lastTabName = getLastTabNameFromSessionStorage();
+    const lastTabName = getLastTabNameFromSessionStorage();
     if (!lastTabName) {
         openTabByName('Customer Info');
     }
