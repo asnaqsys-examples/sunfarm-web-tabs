@@ -659,8 +659,8 @@ BegClass CUSTINQ Extends(Program) Access(*Public) +
         EndDo
 
         If LastRecordedYear *GT 0 
-            For Index( month=0 ) To( MonthsInYear )  
-                WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[month], LastRecordedYearReturns[month])
+            For Index( month=1 ) To( MonthsInYear )  
+                WriteSalesReturnsSubfileRecord( LastRecordedYear, LastRecordedYearSales[month-1], LastRecordedYearReturns[month-1])
             EndFor
         EndIf
         
